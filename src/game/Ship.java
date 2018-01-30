@@ -94,6 +94,10 @@ public class Ship{
 		}
 	}
 	
+	public void cancelBlast(){
+		this.firing = false;
+	}
+	
 	public int getxLocation(){
 		return this.xLocation;
 	}

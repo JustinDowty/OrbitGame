@@ -110,6 +110,7 @@ public class OrbitGame extends JPanel{
 		if((blastXcoordLeft < meteorXcoordRight && blastXcoordRight > meteorXcoordLeft) &&
 				(blastYcoordTop < meteorYcoordBottom && blastYcoordBottom > meteorYcoordTop)) {
 			meteor.reset();
+			ship.cancelBlast();
 		}
 	}
 	
