@@ -26,13 +26,11 @@ public class Ship{
 	public void setLocation(){
 		this.xLocation = OrbitGame.WINDOW_WIDTH / 2 + OrbitGame.MARGIN;
 		this.yLocation = OrbitGame.WINDOW_HEIGHT - 3 * height;
-		this.blastxLocation = xLocation + 10;
+		this.blastxLocation = xLocation + width/2;
 		this.blastyLocation = OrbitGame.WINDOW_HEIGHT - 3*height;
 	}
 	
-	// !!! May want a set speed function eventually, for now speed is static
-	
-	public void paint(Graphics g){
+	public void paintComponent(Graphics g){
 		g.setColor(Color.YELLOW);
 		g.fillRect(blastxLocation, blastyLocation, width/2, height); // Blast is 1/2 the width and height of ship
 		g.setColor(Color.CYAN);

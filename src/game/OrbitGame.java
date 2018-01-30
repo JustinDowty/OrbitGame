@@ -33,7 +33,8 @@ public class OrbitGame extends JPanel{
 			meteor.paint(g);
 		}		
 		planet.paintComponent(g);
-		ship.paint(g);
+		ship.paintComponent(g);
+		// Drawing small tick showing ship bounds next to planet
 		g.setColor(Color.LIGHT_GRAY);
 		g.drawLine(410, 900, 410, 730);
 	}
@@ -129,8 +130,13 @@ public class OrbitGame extends JPanel{
         });
 	}
 	
-	public static void main(String[] args) throws InterruptedException {
-        OrbitGame game = new OrbitGame();
+	/*
+	 * This static method begins game. To call in other class beginning the game
+	 * use OrbitGame.beginGame()
+	 * This function creates OrbitGame object and frame, starting play
+	 */
+	public static void beginGame() throws InterruptedException{
+		OrbitGame game = new OrbitGame();
         JFrame frame = new JFrame();
         JPanel scorePanel = new ScorePanel();
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -152,5 +158,14 @@ public class OrbitGame extends JPanel{
             currTime += 10;
             Thread.sleep(10);
         }
+	}
+	
+	/*
+	 * Main function is calling beginGame() to begin game for testing
+     * Menu class will ball beginGame() and this main function will be
+	 * deleted in this case
+	 */
+	public static void main(String[] args) throws InterruptedException {
+        beginGame();
     }	
 }

@@ -3,7 +3,6 @@ package game;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Polygon;
-import java.util.Random;
 
 public class Planet {
 	private Polygon land;
@@ -12,7 +11,6 @@ public class Planet {
 	private int xLocation;
 	private int yLocation;
 	private int driftSpeed;
-	private static Random rand = new Random();
 	
 	public Planet(){
 		this.driftSpeed = 1;
@@ -23,10 +21,10 @@ public class Planet {
 		int[] yCoords = {900, 600, 600, 500, 600, 500, 650, 900};
 		int points = 8;
 		land = new Polygon(xCoords, yCoords, points);	
-		this.waterColor = chooseRandomColor();
-		this.landColor = chooseRandomColor();
+		this.waterColor = Utils.chooseRandomColor();
+		this.landColor = Utils.chooseRandomColor();
 		while(waterColor == landColor){
-			this.waterColor = chooseRandomColor();
+			this.waterColor = Utils.chooseRandomColor();
 		}
 	}
 	
@@ -54,35 +52,5 @@ public class Planet {
 	
 	public void setLandColor(Color color){
 		this.landColor = color;
-	}
-	
-	public static Color chooseRandomColor(){
-		int r = rand.nextInt(7);
-		Color color = null;
-		if(r == 0){
-			color = Color.BLUE;
-		}
-		if(r == 1){
-			color = Color.GREEN;
-		}
-		if(r == 2){
-			color = Color.RED;
-		}
-		if(r == 3){
-			color = Color.MAGENTA;
-		}
-		if(r == 4){
-			color = Color.CYAN;
-		}
-		if(r == 5){
-			color = Color.DARK_GRAY;
-		}
-		if(r == 6){
-			color = Color.PINK;
-		}
-		if(r == 7){
-			color = Color.LIGHT_GRAY;
-		}
-		return color;
 	}
 }
