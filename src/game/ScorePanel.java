@@ -12,6 +12,10 @@ import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
 public class ScorePanel extends JPanel {
+	/*
+	 * Meteor class determines when meteors dodged is incremented
+	 * which is why these variables are static
+	 */
 	private static int meteorsDodged = 0;
 	private static JLabel fireButton;
 	private static JLabel scoreText = new JLabel("0", SwingConstants.CENTER);
@@ -21,7 +25,6 @@ public class ScorePanel extends JPanel {
 		this.setBackground(Color.CYAN);
 		Border border = BorderFactory.createLineBorder(Color.DARK_GRAY, 15);
 		this.setBorder(border);
-		
 		JLabel title = new JLabel("ORBIT");
 		Font titleFont = new Font("Impact", Font.BOLD, 80);
 		title.setFont(titleFont);
@@ -37,12 +40,12 @@ public class ScorePanel extends JPanel {
 		scoreText.setFont(scoreFont);
 		this.add(scoreText);
 		
-		fireButton = setFireButton();
+		fireButton = createFireButton();
 		this.add(fireButton);
 		
 	}
 	
-	public JLabel setFireButton(){
+	public JLabel createFireButton(){
 		Font fireFont = new Font("Impact", Font.BOLD, 40);
 		fireButton = new JLabel("FIRE!");
 		fireButton.setFont(fireFont);
