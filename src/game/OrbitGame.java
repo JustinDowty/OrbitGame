@@ -3,6 +3,7 @@ package game;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -20,11 +21,22 @@ public class OrbitGame extends JPanel{
 	private static char currentKey;
 	private static boolean playing;
 	
+	// Used for double buffering graphics
+	private Graphics dbg;
+	private Image dbImage;
+	
 	public OrbitGame(){
 		// Adds one meteor to start game off
 		meteorArray.add(new Meteor());
 		this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		this.setBackground(Color.BLACK);
+	}
+	
+	public void paint(Graphics g){
+		dbImage = createImage(WINDOW_WIDTH, WINDOW_HEIGHT);
+		dbg= dbImage.getGraphics();
+		paintComponent(dbg);
+		g.drawImage(dbImage, 0, 0, this);
 	}
 	
 	public void paintComponent(Graphics g){
