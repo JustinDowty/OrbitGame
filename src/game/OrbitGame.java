@@ -111,6 +111,7 @@ public class OrbitGame extends JPanel{
 				(blastYcoordTop < meteorYcoordBottom && blastYcoordBottom > meteorYcoordTop)) {
 			meteor.reset();
 			ship.cancelBlast();
+			ScorePanel.setFireButtonColor(Color.RED);
 		}
 	}
 	
