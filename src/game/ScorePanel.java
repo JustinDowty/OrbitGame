@@ -3,7 +3,6 @@ package game;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -12,6 +11,10 @@ import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
 public class ScorePanel extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/*
 	 * Meteor class determines when meteors dodged is incremented
 	 * which is why these variables are static
@@ -50,14 +53,17 @@ public class ScorePanel extends JPanel {
 		fireButton = new JLabel("FIRE!");
 		fireButton.setFont(fireFont);
 		fireButton.setForeground(Color.LIGHT_GRAY);
-		Border border = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 10);
-		fireButton.setBorder(border);
 		return fireButton;
-		}
+	}
 
 	public static void incrementMeteorsDodged(){
 		meteorsDodged++;
 		scoreText.setText("" + meteorsDodged);
+	}
+	
+	public static void resetMeteorsDodged(){
+		meteorsDodged = 0;
+		scoreText.setText("0");
 	}
 	
 	public static void setFireButtonColor(Color color){

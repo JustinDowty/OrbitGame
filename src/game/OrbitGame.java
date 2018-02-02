@@ -1,37 +1,46 @@
 package game;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.WindowConstants;
 
 public class OrbitGame extends JPanel{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final int WINDOW_WIDTH = 1100;
 	public static final int WINDOW_HEIGHT = 800;
 	public final static int MARGIN = 400; // The margin from edge of screen to maximum meteor x location
-	private ArrayList<Meteor> meteorArray = new ArrayList<Meteor>();
-	private static Ship ship = new Ship();	
-	private static Planet planet = new Planet();
-	private static char currentKey;
-	private static boolean playing;
+	private ArrayList<Meteor> meteorArray;
+	public static Ship ship;	
+	private static Planet planet;
+	public static char currentKey;
+	public boolean playing;
 	
 	// Used for double buffering graphics
 	private Graphics dbg;
 	private Image dbImage;
 	
 	public OrbitGame(){
-		// Adds one meteor to start game off
-		meteorArray.add(new Meteor());
+		reset();
 		this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		this.setBackground(Color.BLACK);
 	}
 	
+	public void reset(){
+		planet = new Planet();
+		ship = new Ship();
+		meteorArray = new ArrayList<Meteor>();
+		ScorePanel.resetMeteorsDodged();
+		// Adds one meteor to start game off
+		meteorArray.add(new Meteor());
+		currentKey = 'S';
+	}
+	
+	//Double buffering
 	public void paint(Graphics g){
 		dbImage = createImage(WINDOW_WIDTH, WINDOW_HEIGHT);
 		dbg= dbImage.getGraphics();
@@ -41,10 +50,10 @@ public class OrbitGame extends JPanel{
 	
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);		
+		planet.paintComponent(g);
 		for(Meteor meteor : meteorArray){
 			meteor.paint(g);
-		}		
-		planet.paintComponent(g);
+		}
 		ship.paintComponent(g);
 		// Drawing small tick showing ship bounds next to planet
 		g.setColor(Color.LIGHT_GRAY);
@@ -115,71 +124,5 @@ public class OrbitGame extends JPanel{
 		}
 	}
 	
-	public static void setUpKeyListener(JFrame frame){
-		frame.addKeyListener(new KeyListener(){
-        	@Override
-        	public void keyPressed(KeyEvent e){
-        		if(e.getKeyCode() == 39){ // Right arrow
-        			currentKey = 'R';
-        		}
-        		else if(e.getKeyCode() == 37){ // Left arrow
-        			currentKey = 'L';
-        		}
-        		else if (e.getKeyCode()==38){ // Up arrow
-        			currentKey = 'U';
-        	    }
-        	    else if (e.getKeyCode()==40){ // Down arrow
-        	        currentKey = 'D';
-        	    }
-        	    else if (e.getKeyCode()==32){ // Space bar
-        	    	ship.initiateBlast();
-        	    }
-        	}
-        	@Override
-        	public void keyTyped(KeyEvent e) {        	}
-        	@Override
-        	public void keyReleased(KeyEvent e) {
-        		currentKey = 'S';
-        	}
-        });
-	}
 	
-	/*
-	 * This static method begins game. To call in other class beginning the game
-	 * use OrbitGame.beginGame()
-	 * This function creates OrbitGame object and frame, starting play
-	 */
-	public static void beginGame() throws InterruptedException{
-		OrbitGame game = new OrbitGame();
-        JFrame frame = new JFrame();
-        JPanel scorePanel = new ScorePanel();
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.add(game, BorderLayout.CENTER);
-        mainPanel.add(scorePanel, BorderLayout.EAST);
-        frame.add(mainPanel);
-        setUpKeyListener(frame);
-        frame.setVisible(true);
-        frame.setSize(WINDOW_WIDTH + 300, WINDOW_HEIGHT);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setTitle("ORBIT");
-        frame.setResizable(true);
-        frame.setLocationRelativeTo(null);
-        int currTime = 0;
-        playing = true;
-        while (playing) {
-            game.update(currTime);
-            game.repaint();
-            currTime += 10;
-            Thread.sleep(10);
-        }
-	}
-	
-	/*
-	 * Main function is calling beginGame() to begin game for testing
-     * Menu class will ball beginGame() and this main function will be
-	 * deleted in this case
-	 */
-	public static void main(String[] args) throws InterruptedException {
-        beginGame();
-    }	
 }

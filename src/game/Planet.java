@@ -17,7 +17,7 @@ public class Planet {
 		this.xLocation = -300;
 		this.yLocation = OrbitGame.WINDOW_HEIGHT - 400;
 		
-		int[] xCoords = {0, 10, 20, 100, 180, 260, 300, 10};
+		int[] xCoords = {0, 10, 20, 100, 180, 360, 400, 50};
 		int[] yCoords = {900, 600, 600, 500, 600, 500, 650, 900};
 		int points = 8;
 		land = new Polygon(xCoords, yCoords, points);	
@@ -29,19 +29,19 @@ public class Planet {
 	}
 	
 	public void drift(int currTime){
-		if(currTime % 100 == 0){
+		if(currTime % 500 == 0){
 			this.xLocation -= this.driftSpeed;
-			//this.yLocation += this.driftSpeed;
+			this.yLocation += this.driftSpeed;
 			for(int i = 0; i < land.xpoints.length; i ++){
 				land.xpoints[i] -= this.driftSpeed;
-				//land.ypoints[i] += this.driftSpeed;
+				land.ypoints[i] += this.driftSpeed;
 			}
 		}		
 	}
 	
 	public void paintComponent(Graphics g){
 		g.setColor(waterColor);
-		g.fillOval(this.xLocation, this.yLocation, 700, 700);
+		g.fillOval(this.xLocation, this.yLocation, 900, 900);
 		g.setColor(landColor);
 		g.fillPolygon(land);
 	}

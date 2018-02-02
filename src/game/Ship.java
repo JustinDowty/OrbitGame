@@ -2,9 +2,6 @@ package game;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.event.KeyEvent;
-
-import javax.swing.JLabel;
 
 public class Ship{
 	private int xLocation;
@@ -76,6 +73,7 @@ public class Ship{
 	public void initiateBlast(){
 		if(this.canFire){
 			this.blastyLocation = yLocation; // puts blast at ships position before firing
+			this.blastxLocation = xLocation;
 			this.firing = true; // allowing blast to fly
 			this.canFire = false; // so you have to wait to fire again
 			ScorePanel.setFireButtonColor(Color.LIGHT_GRAY); // sets fire button to show cannot fire

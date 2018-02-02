@@ -27,7 +27,7 @@ public class Meteor {
 	// Sets random speed
 	//!!! ADD SPEED INCREMENT HERE AND IN RESET
 	public void setSpeed(){
-		this.ySpeed = rand.nextInt(5) + 5;
+		this.ySpeed = rand.nextInt(1) + 4;
 		this.xSpeed = 30;
 	}
 	
