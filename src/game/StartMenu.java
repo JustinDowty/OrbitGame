@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
 public class StartMenu extends JFrame implements ActionListener{
@@ -22,7 +23,9 @@ public class StartMenu extends JFrame implements ActionListener{
         this.setResizable(false);
         this.setLocationRelativeTo(null);
         this.add(button);
-        this.setVisible(true);       
+        this.setVisible(true);   
+        
+        
     }
 	
 	public void actionPerformed(ActionEvent e){
@@ -31,6 +34,9 @@ public class StartMenu extends JFrame implements ActionListener{
 		g.beginGame();
 	}
 	
-	
+	public static void main(String[] args){
+		MainGUI gui = new MainGUI();
+		gui.beginGame();
+	}
 	
 }

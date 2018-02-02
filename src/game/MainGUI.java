@@ -104,12 +104,20 @@ public class MainGUI extends JFrame implements ActionListener{
 				e.printStackTrace();
 			}
         }
+        /**
+         * !!!CHECK HERE!!!
+         * If current gui is closed and new gui is opened here, in the exact way it is in the main,
+         * it opens just fine. Removing the dialog all together and having it respawn immediately after
+         * losing works just fine. But comment out MainGUI gui... and gui.beginGame...
+         * and let the StartMenu g pop up run, which calls those same two lines to generate a new game,
+         * this is what won't work and is probably necessary to start games from various menus and such
+         */
         int c = JOptionPane.showConfirmDialog(this, "Retry?", "GAME OVER", JOptionPane.YES_NO_OPTION);
         if(c == JOptionPane.YES_OPTION){
         	this.dispose();
-            MainGUI gui = new MainGUI();
-            gui.beginGame();
-        	//StartMenu g = new StartMenu();
+            //MainGUI gui = new MainGUI();
+            //gui.beginGame();
+        	StartMenu g = new StartMenu();
         }
         else if(c == JOptionPane.NO_OPTION) {
         	System.exit(0);
@@ -117,8 +125,5 @@ public class MainGUI extends JFrame implements ActionListener{
 
 	}
 	
-	public static void main(String[] args){
-		MainGUI gui = new MainGUI();
-		gui.beginGame();
-	}
+	
 }
