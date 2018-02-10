@@ -45,12 +45,12 @@ public class OrbitGame extends JPanel{
 		paintComponent(dbg);
 		g.drawImage(dbImage, 0, 0, this);
 	}
-	
+
 	public void paintComponent(Graphics g){
-		super.paintComponent(g);		
+		super.paintComponent(g);	
 		planet.paintComponent(g);
 		for(Meteor meteor : meteorArray){
-			meteor.paint(g);
+			meteor.paintComponent(g);
 		}
 		ship.paintComponent(g);
 		// Drawing small tick showing ship bounds next to planet
@@ -90,12 +90,12 @@ public class OrbitGame extends JPanel{
 		int shipXcoordLeft = ship.getxLocation();
 		int shipXcoordRight = ship.getxLocation() + ship.width;
 		int meteorXcoordLeft = meteor.getxLocation();
-		int meteorXcoordRight = meteor.getxLocation() + meteor.getSize();
+		int meteorXcoordRight = meteor.getxLocation() + meteor.getWidth();
 		
 		int shipYcoordTop = ship.getyLocation();
 		int shipYcoordBottom = ship.getyLocation() + ship.height;
 		int meteorYcoordTop = meteor.getyLocation();
-		int meteorYcoordBottom = meteor.getyLocation() + meteor.getSize();
+		int meteorYcoordBottom = meteor.getyLocation() + meteor.getWidth() - 10;
 		
 		if((shipXcoordLeft < meteorXcoordRight && shipXcoordRight > meteorXcoordLeft) &&
 				(shipYcoordTop < meteorYcoordBottom && shipYcoordBottom > meteorYcoordTop)) {
@@ -107,12 +107,12 @@ public class OrbitGame extends JPanel{
 		int blastXcoordLeft = ship.getBlastxLocation();
 		int blastXcoordRight = ship.getBlastxLocation() + ship.width/2;
 		int meteorXcoordLeft = meteor.getxLocation();
-		int meteorXcoordRight = meteor.getxLocation() + meteor.getSize();
+		int meteorXcoordRight = meteor.getxLocation() + meteor.getWidth();
 		
 		int blastYcoordTop = ship.getBlastyLocation();
 		int blastYcoordBottom = ship.getBlastyLocation() + ship.height/2;
 		int meteorYcoordTop = meteor.getyLocation();
-		int meteorYcoordBottom = meteor.getyLocation() + meteor.getSize();
+		int meteorYcoordBottom = meteor.getyLocation() + meteor.getWidth();
 		
 		if((blastXcoordLeft < meteorXcoordRight && blastXcoordRight > meteorXcoordLeft) &&
 				(blastYcoordTop < meteorYcoordBottom && blastYcoordBottom > meteorYcoordTop)) {

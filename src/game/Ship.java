@@ -3,7 +3,10 @@ package game;
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class Ship{
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+
+public class Ship extends JPanel{
 	private int xLocation;
 	private int yLocation;
 	private int blastxLocation;
@@ -14,7 +17,7 @@ public class Ship{
 	// Change publics to final and add getter method if necessary,
 	// if not make variables final
 	public int width = 20;
-	public int height = 40;
+	public int height = 45;
 	
 	public Ship(){
 		setLocation();
@@ -28,10 +31,10 @@ public class Ship{
 	}
 	
 	public void paintComponent(Graphics g){
+		ImageIcon i = new ImageIcon("ship.png");
 		g.setColor(Color.YELLOW);
 		g.fillRect(blastxLocation, blastyLocation, width/2, height); // Blast is 1/2 the width and height of ship
-		g.setColor(Color.CYAN);
-		g.fillRect(xLocation, yLocation, width, height);
+		i.paintIcon(this, g, xLocation, yLocation);
 	}
 	
 	public void moveRight(){
