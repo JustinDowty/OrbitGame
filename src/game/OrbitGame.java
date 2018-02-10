@@ -122,5 +122,4 @@ public class OrbitGame extends JPanel{
 		}
 	}
 	
-	
 }

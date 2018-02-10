@@ -1,6 +1,5 @@
 package game;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -16,8 +15,7 @@ public class Meteor extends JPanel{
 	private int ySpeed;
 	private double xSpeed;
 	private Dimension size;
-	private Random rand = new Random();
-	
+	private Random rand = new Random();	
 	private ImageIcon i;
 	
 	public Meteor(){
@@ -40,7 +38,7 @@ public class Meteor extends JPanel{
 	
 	// Sets random size
 	public void setSize(){
-		this.size = new Dimension(rand.nextInt(40) + 10, rand.nextInt(40) + 10);
+		this.size = new Dimension(rand.nextInt(40) + 50, rand.nextInt(40) + 50);
 	}
 	
 	// Paints meteor
@@ -53,7 +51,17 @@ public class Meteor extends JPanel{
 		this.setSize();
 		this.setLocation();
 		this.setSpeed();
-		i = new ImageIcon("meteor.png");
+		int r = rand.nextInt(3);
+		if(r == 0){
+			i = new ImageIcon("meteor.png");
+		}
+		else if(r == 1){
+			i = new ImageIcon("meteor2.png");
+		}
+		else{
+			i = new ImageIcon("meteor3.png");
+		}
+		
 		Image image = i.getImage(); // transform it
 		Image newimg = image.getScaledInstance(this.getWidth(), this.getWidth(),  java.awt.Image.SCALE_SMOOTH); 
 		i = new ImageIcon(newimg);
