@@ -15,14 +15,12 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 public class MainGUI extends JFrame implements ActionListener{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JMenuItem restartItem;
 	private JMenuBar menuBar;
 	private JMenu fileMenu;
 	private OrbitGame game;
+	public static MainGUI gui;
 
 	public MainGUI(){
 		game = new OrbitGame();
@@ -32,8 +30,7 @@ public class MainGUI extends JFrame implements ActionListener{
         restartItem.addActionListener(this);
         this.setJMenuBar(menuBar);
         fileMenu.add(restartItem);
-        menuBar.add(fileMenu);
-        
+        menuBar.add(fileMenu);        
         JPanel scorePanel = new ScorePanel();
         this.setLayout(new BorderLayout());
         this.add(scorePanel, BorderLayout.EAST);
@@ -51,9 +48,9 @@ public class MainGUI extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e){
 		if(e.getSource() == restartItem){	
 			game.playing = false;
-			//this.beginGame();
-			StartMenu m = new StartMenu();
-			//this.dispose();			
+			this.dispose();	
+			MainGUI gui = new MainGUI();
+			gui.beginGame();
 		}
 	}
 	
@@ -88,42 +85,30 @@ public class MainGUI extends JFrame implements ActionListener{
 	
 	// Resets game 
 	public void beginGame(){
-		ScorePanel.resetMeteorsDodged();
-		game.reset();      
-		game.setVisible(true);
-        int currTime = 0;
-        game.playing = true;
-        game.repaint();
-        while (game.playing) {
-            game.update(currTime);
-            game.repaint();
-            currTime += 10;
-			try {
-				Thread.sleep(10);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-        }
-        /**
-         * !!!CHECK HERE!!!
-         * If current gui is closed and new gui is opened here, in the exact way it is in the main,
-         * it opens just fine. Removing the dialog all together and having it respawn immediately after
-         * losing works just fine. But comment out MainGUI gui... and gui.beginGame...
-         * and let the StartMenu g pop up run, which calls those same two lines to generate a new game,
-         * this is what won't work and is probably necessary to start games from various menus and such
-         */
-        int c = JOptionPane.showConfirmDialog(this, "Retry?", "GAME OVER", JOptionPane.YES_NO_OPTION);
-        if(c == JOptionPane.YES_OPTION){
-        	this.dispose();
-            //MainGUI gui = new MainGUI();
-            //gui.beginGame();
-        	StartMenu g = new StartMenu();
-        }
-        else if(c == JOptionPane.NO_OPTION) {
-        	System.exit(0);
-        }
-
+		Runnable r = new Runnable(){
+			@Override
+			public void run() {
+				game.reset();
+				int currTime = 0;
+		        while (game.playing) {
+		            game.update(currTime);
+		            game.repaint();
+		            currTime += 10;
+					try {
+						Thread.sleep(11);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+		        }
+				StartMenu m = new StartMenu();
+			}			
+		};
+		Thread t = new Thread(r);
+		t.start();
 	}
 	
-	
+	public static void main(String[] args){
+		gui = new MainGUI();
+		gui.beginGame();
+	}
 }

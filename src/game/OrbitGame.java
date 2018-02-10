@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 public class OrbitGame extends JPanel{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	public static final int WINDOW_WIDTH = 1100;
 	public static final int WINDOW_HEIGHT = 800;
@@ -35,6 +32,7 @@ public class OrbitGame extends JPanel{
 		ship = new Ship();
 		meteorArray = new ArrayList<Meteor>();
 		ScorePanel.resetMeteorsDodged();
+		playing = true;
 		// Adds one meteor to start game off
 		meteorArray.add(new Meteor());
 		currentKey = 'S';

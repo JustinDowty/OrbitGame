@@ -11,9 +11,11 @@ import javax.swing.WindowConstants;
 
 public class StartMenu extends JFrame implements ActionListener{
 
+	
 	public StartMenu(){
 		JButton button = new JButton("START");
 		button.addActionListener(this);
+
 		
 		this.setLayout(new BorderLayout());
         this.setFocusable(true);
@@ -29,14 +31,11 @@ public class StartMenu extends JFrame implements ActionListener{
     }
 	
 	public void actionPerformed(ActionEvent e){
+		//MainGUI.gui.dispose();
 		this.dispose();
-		MainGUI g = new MainGUI();
-		g.beginGame();
+		MainGUI.gui.beginGame();
 	}
 	
-	public static void main(String[] args){
-		MainGUI gui = new MainGUI();
-		gui.beginGame();
-	}
+	
 	
 }
