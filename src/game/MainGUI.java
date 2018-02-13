@@ -47,9 +47,7 @@ public class MainGUI extends JFrame implements ActionListener{
 	
 	public void actionPerformed(ActionEvent e){
 		if(e.getSource() == restartItem){	
-			game.playing = false;
-			this.dispose();	
-			MainGUI gui = new MainGUI();
+			game.playing = false;	
 			gui.beginGame();
 		}
 	}
@@ -59,26 +57,26 @@ public class MainGUI extends JFrame implements ActionListener{
         	@Override
         	public void keyPressed(KeyEvent e){
         		if(e.getKeyCode() == 39){ // Right arrow
-        			OrbitGame.currentKey = 'R';
+        			game.currentKey = 'R';
         		}
         		else if(e.getKeyCode() == 37){ // Left arrow
-        			OrbitGame.currentKey = 'L';
+        			game.currentKey = 'L';
         		}
         		else if (e.getKeyCode()==38){ // Up arrow
-        			OrbitGame.currentKey = 'U';
+        			game.currentKey = 'U';
         	    }
         	    else if (e.getKeyCode()==40){ // Down arrow
-        	        OrbitGame.currentKey = 'D';
+        	        game.currentKey = 'D';
         	    }
         	    else if (e.getKeyCode()==32){ // Space bar
-        	    	OrbitGame.ship.initiateBlast();
+        	    	game.ship.initiateBlast();
         	    }
         	}
         	@Override
         	public void keyTyped(KeyEvent e) {        	}
         	@Override
         	public void keyReleased(KeyEvent e) {
-        		OrbitGame.currentKey = 'S';
+        		game.currentKey = 'S';
         	}
         });
 	}
@@ -93,6 +91,7 @@ public class MainGUI extends JFrame implements ActionListener{
 		        while (game.playing) {
 		            game.update(currTime);
 		            game.repaint();
+		            ScorePanel.updateScore();
 		            currTime += 10;
 					try {
 						Thread.sleep(11);
@@ -100,15 +99,34 @@ public class MainGUI extends JFrame implements ActionListener{
 						e.printStackTrace();
 					}
 		        }
-				StartMenu m = new StartMenu();
+		        lostDialog();
 			}			
 		};
 		Thread t = new Thread(r);
 		t.start();
 	}
 	
-	public static void main(String[] args){
-		gui = new MainGUI();
-		gui.beginGame();
+	public void lostDialog(){
+		Object[] options = {"Let's Go!",
+                "No way.",
+                "Menu"};
+		int n = JOptionPane.showOptionDialog(this,
+				"Try Again?",
+						"GAME OVER",
+						JOptionPane.YES_NO_CANCEL_OPTION,
+						JOptionPane.PLAIN_MESSAGE,
+						null,
+						options,
+						null);
+		if(n == JOptionPane.YES_OPTION){
+			gui.beginGame();
+		}
+		else if(n == JOptionPane.NO_OPTION){
+			System.exit(0);
+		}
+		else if(n == JOptionPane.CANCEL_OPTION){
+			this.dispose();
+			StartMenu m = new StartMenu();
+		}
 	}
 }

@@ -24,11 +24,13 @@ public class ScorePanel extends JPanel {
 	private static JLabel fireButton;
 	private static JLabel meteors = new JLabel("0", SwingConstants.CENTER);
 	private static JLabel aliens = new JLabel("0", SwingConstants.CENTER);
+	private static JLabel score = new JLabel("0", SwingConstants.CENTER);
 	
 	public ScorePanel(){		
 		this.setPreferredSize(new Dimension(295, OrbitGame.WINDOW_HEIGHT));
 		this.setBackground(Color.CYAN);
 		Border border = BorderFactory.createLineBorder(Color.DARK_GRAY, 15);
+		Border emptyBorder = BorderFactory.createEmptyBorder(0,0,10,0);
 		this.setBorder(border);
 		JLabel title = new JLabel("ORBIT");
 		Font titleFont = new Font("Impact", Font.BOLD, 80);
@@ -38,20 +40,34 @@ public class ScorePanel extends JPanel {
 		JLabel meteorsLabel = new JLabel("<html>METEORS<br/>DODGED:</html>");
 		Font subTitleFont = new Font("Impact", Font.BOLD, 40);
 		meteorsLabel.setFont(subTitleFont);
+		meteorsLabel.setBorder(emptyBorder);
 		this.add(meteorsLabel);
 		
 		meteors.setPreferredSize(new Dimension(190, 60));
 		Font scoreFont = new Font("Impact", Font.BOLD, 60);
 		meteors.setFont(scoreFont);
+		meteors.setBorder(emptyBorder);
 		this.add(meteors);
 		
-		JLabel aliensLabel = new JLabel("<html>ALIENS<br/>DESTROYED:</html>");
+		JLabel aliensLabel = new JLabel("<html>ALIENS<br/>KILLED:</html>");
 		aliensLabel.setFont(subTitleFont);
+		aliensLabel.setBorder(emptyBorder);
 		this.add(aliensLabel);
 		
 		aliens.setPreferredSize(new Dimension(190, 60));
 		aliens.setFont(scoreFont);
+		aliens.setBorder(emptyBorder);
 		this.add(aliens);
+		
+		JLabel scoreLabel = new JLabel("SCORE:");
+		scoreLabel.setFont(subTitleFont);
+		scoreLabel.setBorder(emptyBorder);
+		this.add(scoreLabel);
+		
+		score.setPreferredSize(new Dimension(190, 60));
+		score.setFont(scoreFont);
+		score.setBorder(emptyBorder);
+		this.add(score);
 		
 		fireButton = createFireButton();
 		this.add(fireButton);
@@ -84,6 +100,11 @@ public class ScorePanel extends JPanel {
 	public static void resetAliensKilled(){
 		aliensKilled = 0;
 		aliens.setText("0");
+	}
+	
+	public static void updateScore(){
+		int s = meteorsDodged * aliensKilled;
+		score.setText("" + s);
 	}
 	
 	public static void setFireButtonColor(Color color){

@@ -11,75 +11,102 @@ public class Ship extends JPanel{
 	private int yLocation;
 	private int blastxLocation;
 	private int blastyLocation;
-	private boolean canFire = true;
-	private boolean firing; // Tells if blast is firing
+	public boolean canFire = true;
+	public boolean firing; // Tells if blast is firing
 	private static final int speed = 15;
 	// Change publics to final and add getter method if necessary,
 	// if not make variables final
-	public int width = 20;
+	public int width = 40;
 	public int height = 45;
+	private int health;
+	public boolean healing;
+	private ImageIcon i;
 	
 	public Ship(){
+		this.health = 5;
+		this.healing = false;
 		setLocation();
 	}
 	
 	public void setLocation(){
 		this.xLocation = OrbitGame.WINDOW_WIDTH / 2 + OrbitGame.MARGIN;
-		this.yLocation = OrbitGame.WINDOW_HEIGHT - 3 * height;
-		this.blastxLocation = xLocation + width/2;
-		this.blastyLocation = OrbitGame.WINDOW_HEIGHT - 3*height;
+		this.yLocation = OrbitGame.WINDOW_HEIGHT - 3 * this.height;
+		this.blastxLocation = this.xLocation + width/2;
+		this.blastyLocation = OrbitGame.WINDOW_HEIGHT - 3 * this.height;
 	}
 	
 	public void paintComponent(Graphics g){
-		ImageIcon i = new ImageIcon("ship.png");
+		if(this.healing && this.health > 0){
+			i = new ImageIcon("shiptransparent.png");
+		}
+		else{
+			i = new ImageIcon("ship.png");
+		}
 		g.setColor(Color.YELLOW);
 		g.fillRect(blastxLocation, blastyLocation, width/2, height); // Blast is 1/2 the width and height of ship
 		i.paintIcon(this, g, xLocation, yLocation);
+		g.setColor(Color.GREEN);
+		g.fillRect(this.xLocation + this.width + 20, this.yLocation + 5, 5, 50);
+		g.setColor(Color.RED);
+		if(this.health == 4){
+			g.fillRect(this.xLocation + this.width + 20, this.yLocation + 5, 5, 10);
+		}
+		else if(this.health == 3){
+			g.fillRect(this.xLocation + this.width + 20, this.yLocation + 5, 5, 20);
+		}
+		else if(this.health == 2){
+			g.fillRect(this.xLocation + this.width + 20, this.yLocation + 5, 5, 30);
+		}
+		else if(this.health == 1){
+			g.fillRect(this.xLocation + this.width + 20, this.yLocation + 5, 5, 40);
+		}
+		if(this.health == 0){
+			g.fillRect(this.xLocation + this.width + 20, this.yLocation + 5, 5, 50);
+		}
 	}
 	
 	public void moveRight(){
-		if(xLocation < OrbitGame.WINDOW_WIDTH - 2*width){ // !CHECK VALUE
-			xLocation += speed;
+		if(this.xLocation < OrbitGame.WINDOW_WIDTH - 2*width){ // !CHECK VALUE
+			this.xLocation += speed;
 		}
 		if(!firing){
-			this.blastxLocation = xLocation;
+			this.blastxLocation = this.xLocation;
 		}
 	}
 	
 	public void moveLeft(){
-		if(xLocation > OrbitGame.MARGIN + 10){
-			xLocation -= speed;
+		if(this.xLocation > OrbitGame.MARGIN + 10){
+			this.xLocation -= speed;
 		}
 		if(!firing){
-			this.blastxLocation = xLocation;
+			this.blastxLocation = this.xLocation;
 		}
 	}
 	
 	public void moveDown(){
-		if(yLocation < OrbitGame.WINDOW_HEIGHT - 3 * height){
-			yLocation += speed;
+		if(this.yLocation < OrbitGame.WINDOW_HEIGHT - 3 * height){
+			this.yLocation += speed;
 		}
 		if(!firing){
-			this.blastyLocation = yLocation;
+			this.blastyLocation = this.yLocation;
 		}
 	}
 	
 	public void moveUp(){
-		if(yLocation > 0){
-			yLocation -= speed;
+		if(this.yLocation > 0){
+			this.yLocation -= speed;
 		}
 		if(!firing){
-			this.blastyLocation = yLocation;
+			this.blastyLocation = this.yLocation;
 		}
 	}
 	
 	public void initiateBlast(){
 		if(this.canFire){
-			this.blastyLocation = yLocation; // puts blast at ships position before firing
-			this.blastxLocation = xLocation;
+			this.blastyLocation = this.yLocation; // puts blast at ships position before firing
+			this.blastxLocation = this.xLocation;
 			this.firing = true; // allowing blast to fly
 			this.canFire = false; // so you have to wait to fire again
-			ScorePanel.setFireButtonColor(Color.LIGHT_GRAY); // sets fire button to show cannot fire
 		}
 	}
 	
@@ -91,8 +118,15 @@ public class Ship extends JPanel{
 			this.firing = false; // done with blast path
 			this.canFire = true; // can fire now
 			this.blastyLocation = OrbitGame.WINDOW_HEIGHT; // puts blast off screen
-			ScorePanel.setFireButtonColor(Color.RED); // sets fire button to show can fire
 		}
+	}
+	
+	public int decreaseHealth(){
+		if(this.health > 0){
+			this.health--;
+		}
+		this.healing = true;
+		return this.health;
 	}
 	
 	public void cancelBlast(){

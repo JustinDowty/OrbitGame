@@ -16,9 +16,19 @@ public class Meteor extends JPanel{
 	private double xSpeed;
 	private Dimension size;
 	private Random rand = new Random();	
-	private ImageIcon i;
+	public ImageIcon i;
 	
 	public Meteor(){
+		int r = rand.nextInt(3);
+		if(r == 0){
+			i = new ImageIcon("meteor.png");
+		}
+		else if(r == 1){
+			i = new ImageIcon("meteor2.png");
+		}
+		else{
+			i = new ImageIcon("meteor3.png");
+		}
 		reset();
 	}
 	
@@ -50,18 +60,7 @@ public class Meteor extends JPanel{
 	public void reset(){
 		this.setSize();
 		this.setLocation();
-		this.setSpeed();
-		int r = rand.nextInt(3);
-		if(r == 0){
-			i = new ImageIcon("meteor.png");
-		}
-		else if(r == 1){
-			i = new ImageIcon("meteor2.png");
-		}
-		else{
-			i = new ImageIcon("meteor3.png");
-		}
-		
+		this.setSpeed();		
 		Image image = i.getImage(); // transform it
 		Image newimg = image.getScaledInstance(this.getWidth(), this.getWidth(),  java.awt.Image.SCALE_SMOOTH); 
 		i = new ImageIcon(newimg);
@@ -76,12 +75,11 @@ public class Meteor extends JPanel{
 			xLocation += xSpeed;
 			xSpeed -= 2 * xSpeed / 30;
 		}
-		// Resets meteor at random
+		// Increments score panel, resets at random interval
 		int r = rand.nextInt(1000);
-		if(yLocation > OrbitGame.WINDOW_HEIGHT && 
-				(currTime % 1000 > r && currTime % 1000 < r + 200)){ 
-			this.reset();
+		if(yLocation > OrbitGame.WINDOW_HEIGHT){ 
 			ScorePanel.incrementMeteorsDodged();
+			this.reset();		
 		}
 	}
 	
