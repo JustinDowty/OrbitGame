@@ -8,90 +8,150 @@ import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-public class Meteor extends JPanel{
+/**
+ * Meteor class holds information for each meteor object, controls
+ * their location and movement, and determines size and image.
+ * @author JustinDowty
+ * @author Ted Lange
+ * @author Alec Allain
+ */
+public class Meteor extends JPanel {
+	/**
+	 * Meteor's current X location.
+	 */
 	private int xLocation;
+	/**
+	 * Meteor's current Y location.
+	 */
 	private int yLocation;
+	/**
+	 * Meteor's initial X location.
+	 */
 	private int initxLocation;
+	/**
+	 * Meteor's downward speed (Y).
+	 */
 	private int ySpeed;
+	/**
+	 * Meteor's right speed (X).
+	 */
 	private double xSpeed;
+	/**
+	 * Meteor's size.
+	 */
 	private Dimension size;
+	/**
+	 * Instance of random class.
+	 */
 	private Random rand = new Random();	
-	public ImageIcon i;
+	/**
+	 * Meteor's ImageIcon.
+	 */
+	private ImageIcon i;
 	
-	public Meteor(){
+	/**
+	 * Constructor initalizes meteor. Sets random image and resets.
+	 */
+	public Meteor() {
 		int r = rand.nextInt(3);
-		if(r == 0){
+		if (r == 0) {
 			i = new ImageIcon("meteor.png");
-		}
-		else if(r == 1){
+		} else if (r == 1) {
 			i = new ImageIcon("meteor2.png");
-		}
-		else{
+		} else {
 			i = new ImageIcon("meteor3.png");
 		}
 		reset();
 	}
 	
-	// Sets random x location, resets y to above screen height
-	public void setLocation(){
-		this.xLocation = rand.nextInt((int) (OrbitGame.WINDOW_WIDTH - OrbitGame.MARGIN - size.getWidth())); // Subtracts end margin (room for movement) and meteor size
+	/**
+	 * Sets Meteor's initial location.
+	 */
+	public void setLocation() {
+		// Subtracts end margin (room for movement) and meteor size
+		this.xLocation = rand.nextInt((int) (OrbitGame.WINDOW_WIDTH 
+				- OrbitGame.MARGIN - size.getWidth()));
 		this.initxLocation = xLocation;
 		this.yLocation = rand.nextInt(100);
 	}
 	
-	// Sets random speed
-	//!!! ADD SPEED INCREMENT HERE AND IN RESET
-	public void setSpeed(){
+	/**
+	 * Sets Meteor's speed at random.
+	 */
+	public void setSpeed() {
 		this.ySpeed = rand.nextInt(1) + 4;
 		this.xSpeed = 30;
 	}
 	
-	// Sets random size
-	public void setSize(){
-		this.size = new Dimension(rand.nextInt(40) + 50, rand.nextInt(40) + 50);
+	/**
+	 * Sets Meteor's size at random.
+	 */
+	public void setSize() {
+		this.size = new Dimension(rand.nextInt(40) + 50, 
+			rand.nextInt(40) + 50);
 	}
 	
-	// Paints meteor
-	public void paintComponent(Graphics g){
+	/**
+	 * Paints Meteor at correct location.
+	 * @param g Instance of graphics.
+	 */
+	public void paintComponent(final Graphics g) {
 		i.paintIcon(this, g, xLocation, yLocation);
 	}
 	
-	// Resets the meteors position, size, and speed
-	public void reset(){
+	/**
+	 * Resets Meteor by calling setSize, setLocation, and setSpeed.
+	 */
+	public void reset() {
 		this.setSize();
 		this.setLocation();
 		this.setSpeed();		
 		Image image = i.getImage(); // transform it
-		Image newimg = image.getScaledInstance(this.getWidth(), this.getWidth(),  java.awt.Image.SCALE_SMOOTH); 
+		Image newimg = image.getScaledInstance(this.getWidth(), 
+				this.getWidth(),  java.awt.Image.SCALE_SMOOTH); 
 		i = new ImageIcon(newimg);
 	}
 	
-	// Updates meteors position, resetting if past the bottom of screen and it is time for a new meteor to spawn
-	public void update(int currTime){
-		if(yLocation <= OrbitGame.WINDOW_HEIGHT){
+	/**
+	 * Updates the Meteor's location and speed, resets when meteor
+	 * has reached end of screen.
+	 */
+	public void update() {
+		if (yLocation <= OrbitGame.WINDOW_HEIGHT) {
 			yLocation += ySpeed;
 		}
-		if(yLocation <= OrbitGame.WINDOW_HEIGHT / 2 && xLocation < initxLocation + OrbitGame.MARGIN){ // additional 100 to assure edge is covered
+		if (yLocation <= OrbitGame.WINDOW_HEIGHT / 2 
+				&& xLocation < initxLocation 
+				+ OrbitGame.MARGIN) {
 			xLocation += xSpeed;
 			xSpeed -= 2 * xSpeed / 30;
 		}
 		// Increments score panel, resets at random interval
 		int r = rand.nextInt(1000);
-		if(yLocation > OrbitGame.WINDOW_HEIGHT){ 
+		if (yLocation > OrbitGame.WINDOW_HEIGHT) { 
 			ScorePanel.incrementMeteorsDodged();
 			this.reset();		
 		}
 	}
 	
-	public int getxLocation(){
+	/**
+	 * @return Meteor's X location.
+	 */
+	public int getxLocation() {
 		return this.xLocation;
 	}
 	
-	public int getyLocation(){
+	/**
+	 * @return Meteor's Y location.
+	 */
+	public int getyLocation() {
 		return this.yLocation;
 	}
 	
-	public int getWidth(){
+	/**
+	 * @return Meteor's current width.
+	 */
+	public int getWidth() {
 		return (int) size.getWidth();
 	}
 }

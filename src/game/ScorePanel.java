@@ -10,34 +10,62 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
+/**
+ * This class initializes score panel and contains methods to update
+ * panel based on current score.
+ * @author JustinDowty
+ * @author Ted Lange
+ * @author Alec Allain
+ */
 public class ScorePanel extends JPanel {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-	/*
-	 * Meteor class determines when meteors dodged is incremented
-	 * which is why these variables are static
+	/**
+	 * Current Meteors dodged.
 	 */
 	private static int meteorsDodged = 0;
+	/**
+	 * Current Aliens killed.
+	 */
 	private static int aliensKilled = 0;
+	/**
+	 * JLabel for fire button.
+	 */
 	private static JLabel fireButton;
-	private static JLabel meteors = new JLabel("0", SwingConstants.CENTER);
-	private static JLabel aliens = new JLabel("0", SwingConstants.CENTER);
-	private static JLabel score = new JLabel("0", SwingConstants.CENTER);
+	/**
+	 * JLabel for Meteor count.
+	 */
+	private static JLabel meteors 
+		= new JLabel("0", SwingConstants.CENTER);
+	/**
+	 * JLabel for Alien count.
+	 */
+	private static JLabel aliens 
+		= new JLabel("0", SwingConstants.CENTER);
+	/**
+	 * JLabel for score count.
+	 */
+	private static JLabel score 
+		= new JLabel("0", SwingConstants.CENTER);
 	
-	public ScorePanel(){		
-		this.setPreferredSize(new Dimension(295, OrbitGame.WINDOW_HEIGHT));
+	/**
+	 * Initializes score panel with labels.
+	 */
+	public ScorePanel() {		
+		this.setPreferredSize(new Dimension(295, 
+				OrbitGame.WINDOW_HEIGHT));
 		this.setBackground(Color.CYAN);
-		Border border = BorderFactory.createLineBorder(Color.DARK_GRAY, 15);
-		Border emptyBorder = BorderFactory.createEmptyBorder(0,0,10,0);
+		Border border 
+			= BorderFactory.createLineBorder(Color.DARK_GRAY, 15);
+		Border emptyBorder 
+			= BorderFactory.createEmptyBorder(0, 0, 10, 0);
 		this.setBorder(border);
 		JLabel title = new JLabel("ORBIT");
 		Font titleFont = new Font("Impact", Font.BOLD, 80);
 		title.setFont(titleFont);
 		this.add(title);
 		
-		JLabel meteorsLabel = new JLabel("<html>METEORS<br/>DODGED:</html>");
+		JLabel meteorsLabel 
+			= new JLabel("<html>METEORS<br/>DODGED:</html>");
 		Font subTitleFont = new Font("Impact", Font.BOLD, 40);
 		meteorsLabel.setFont(subTitleFont);
 		meteorsLabel.setBorder(emptyBorder);
@@ -49,7 +77,8 @@ public class ScorePanel extends JPanel {
 		meteors.setBorder(emptyBorder);
 		this.add(meteors);
 		
-		JLabel aliensLabel = new JLabel("<html>ALIENS<br/>KILLED:</html>");
+		JLabel aliensLabel 
+			= new JLabel("<html>ALIENS<br/>KILLED:</html>");
 		aliensLabel.setFont(subTitleFont);
 		aliensLabel.setBorder(emptyBorder);
 		this.add(aliensLabel);
@@ -74,7 +103,11 @@ public class ScorePanel extends JPanel {
 		
 	}
 	
-	public JLabel createFireButton(){
+	/**
+	 * Creates fire button.
+	 * @return The fire button to be used in panel.
+	 */
+	public JLabel createFireButton() {
 		Font fireFont = new Font("Impact", Font.BOLD, 40);
 		fireButton = new JLabel("FIRE!");
 		fireButton.setFont(fireFont);
@@ -82,32 +115,52 @@ public class ScorePanel extends JPanel {
 		return fireButton;
 	}
 
-	public static void incrementMeteorsDodged(){
+	/**
+	 * Increments number of meteors dodged, updates text field.
+	 */
+	public static void incrementMeteorsDodged() {
 		meteorsDodged++;
 		meteors.setText("" + meteorsDodged);
 	}
 	
-	public static void resetMeteorsDodged(){
+	/**
+	 * Resets meteors dodged to 0, updates text field.
+	 */
+	public static void resetMeteorsDodged() {
 		meteorsDodged = 0;
 		meteors.setText("0");
 	}
 	
-	public static void incrementAliensKilled(){
+	/**
+	 * Increments aliens killed, updates text field.
+	 */
+	public static void incrementAliensKilled() {
 		aliensKilled++;
 		aliens.setText("" + aliensKilled);
 	}
 	
-	public static void resetAliensKilled(){
+	/**
+	 * Resets aliens killed to 0, updates text field.
+	 */
+	public static void resetAliensKilled() {
 		aliensKilled = 0;
 		aliens.setText("0");
 	}
 	
-	public static void updateScore(){
+	/**
+	 * Updates score text field. Score is meteors dodged times a 
+	 * multiplier of aliens killed.
+	 */
+	public static void updateScore() {
 		int s = meteorsDodged * aliensKilled;
 		score.setText("" + s);
 	}
 	
-	public static void setFireButtonColor(Color color){
+	/**
+	 * Sets the color of the fire button.
+	 * @param color Color to set button to.
+	 */
+	public static void setFireButtonColor(final Color color) {
 		fireButton.setForeground(color);
 		Border border = BorderFactory.createLineBorder(color, 10);
 		fireButton.setBorder(border);

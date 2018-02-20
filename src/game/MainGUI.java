@@ -14,15 +14,37 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-public class MainGUI extends JFrame implements ActionListener{
+/**
+ * This class initiates the main gui frame and holds the components 
+ * of the game. The main loop is found in this class to update screen
+ * as the game is played.
+ * @author JustinDowty
+ * @author Ted Lange
+ * @author Alec Allain
+ */
+public class MainGUI extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
+	/**
+	 * Menu item for restarting game.
+	 */
 	private JMenuItem restartItem;
+	/**
+	 * Menu bar for frame.
+	 */
 	private JMenuBar menuBar;
+	/**
+	 * File menu for frame.
+	 */
 	private JMenu fileMenu;
+	/**
+	 * Instance of OrbitGame to run game engine.
+	 */
 	private OrbitGame game;
-	public static MainGUI gui;
 
-	public MainGUI(){
+	/**
+	 * Constructor initializes new game and adds components to frame.
+	 */
+	public MainGUI() {
 		game = new OrbitGame();
         menuBar = new JMenuBar();
         fileMenu = new JMenu("File");
@@ -45,50 +67,58 @@ public class MainGUI extends JFrame implements ActionListener{
         this.setVisible(true);        
 	}
 	
-	public void actionPerformed(ActionEvent e){
-		if(e.getSource() == restartItem){	
-			game.playing = false;	
-			gui.beginGame();
+	/**
+	 * Action performed resets game when restartItem is clicked in menu.
+	 * @param e ActionEvent instance.
+	 */
+	public void actionPerformed(final ActionEvent e) {
+		if (e.getSource() == restartItem) {	
+			game.setPlaying(false);	
+			this.beginGame();
 		}
 	}
 	
-	public void setUpKeyListener(){
-		this.addKeyListener(new KeyListener(){
+	/**
+	 * Sets up key listener for frame. Keys are used to control game 
+	 * interaction.
+	 */
+	public void setUpKeyListener() {
+		this.addKeyListener(new KeyListener() {
         	@Override
-        	public void keyPressed(KeyEvent e){
-        		if(e.getKeyCode() == 39){ // Right arrow
-        			game.currentKey = 'R';
-        		}
-        		else if(e.getKeyCode() == 37){ // Left arrow
-        			game.currentKey = 'L';
-        		}
-        		else if (e.getKeyCode()==38){ // Up arrow
-        			game.currentKey = 'U';
-        	    }
-        	    else if (e.getKeyCode()==40){ // Down arrow
-        	        game.currentKey = 'D';
-        	    }
-        	    else if (e.getKeyCode()==32){ // Space bar
-        	    	game.ship.initiateBlast();
+        	public void keyPressed(final KeyEvent e) {
+        		if (e.getKeyCode() == 39) { // Right arrow
+        			game.setCurrentKey('R');
+        		} else if (e.getKeyCode() == 37) { // Left arrow
+        			game.setCurrentKey('L');
+        		} else if (e.getKeyCode() == 38) { // Up arrow
+        			game.setCurrentKey('U');
+        	    } else if (e.getKeyCode() == 40) { // Down arrow
+        	        game.setCurrentKey('D');
+        	    } else if (e.getKeyCode() == 32) { // Space bar
+        	    	game.getShip().initiateBlast();
         	    }
         	}
         	@Override
-        	public void keyTyped(KeyEvent e) {        	}
+        	public void keyTyped(final KeyEvent e) {        	}
         	@Override
-        	public void keyReleased(KeyEvent e) {
-        		game.currentKey = 'S';
+        	public void keyReleased(final KeyEvent e) {
+        		game.setCurrentKey('S');
         	}
         });
 	}
 	
-	// Resets game 
-	public void beginGame(){
-		Runnable r = new Runnable(){
+	/**
+	 * Begins the loop to run game. Game is updated and repainted
+	 * every 11ms. The lostDialog is called when game ends and loop 
+	 * is broken.
+	 */
+	public void beginGame() {
+		Runnable r = new Runnable() {
 			@Override
 			public void run() {
 				game.reset();
 				int currTime = 0;
-		        while (game.playing) {
+		        while (game.getPlaying()) {
 		            game.update(currTime);
 		            game.repaint();
 		            ScorePanel.updateScore();
@@ -106,25 +136,26 @@ public class MainGUI extends JFrame implements ActionListener{
 		t.start();
 	}
 	
-	public void lostDialog(){
+	/**
+	 * Called when game ends. Prompts user to retry, view menu, or exit.
+	 */
+	public void lostDialog() {
 		Object[] options = {"Let's Go!",
                 "No way.",
                 "Menu"};
 		int n = JOptionPane.showOptionDialog(this,
 				"Try Again?",
-						"GAME OVER",
-						JOptionPane.YES_NO_CANCEL_OPTION,
-						JOptionPane.PLAIN_MESSAGE,
-						null,
-						options,
-						null);
-		if(n == JOptionPane.YES_OPTION){
-			gui.beginGame();
-		}
-		else if(n == JOptionPane.NO_OPTION){
+					"GAME OVER",
+					JOptionPane.YES_NO_CANCEL_OPTION,
+					JOptionPane.PLAIN_MESSAGE,
+					null,
+					options,
+					null);
+		if (n == JOptionPane.YES_OPTION) {
+			beginGame();
+		} else if (n == JOptionPane.NO_OPTION) {
 			System.exit(0);
-		}
-		else if(n == JOptionPane.CANCEL_OPTION){
+		} else if (n == JOptionPane.CANCEL_OPTION) {
 			this.dispose();
 			StartMenu m = new StartMenu();
 		}
