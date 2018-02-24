@@ -12,7 +12,7 @@ import javax.swing.JPanel;
  * Meteor class holds information for each meteor object, controls
  * their location and movement, and determines size and image.
  * @author JustinDowty
- * @author Ted Lange
+ * @author Ted Lang
  * @author Alec Allain
  */
 public class Meteor extends JPanel {
@@ -127,7 +127,6 @@ public class Meteor extends JPanel {
 			xSpeed -= 2 * xSpeed / 30;
 		}
 		// Increments score panel, resets at random interval
-		int r = rand.nextInt(1000);
 		if (yLocation > OrbitGame.WINDOW_HEIGHT) { 
 			ScorePanel.incrementMeteorsDodged();
 			this.reset();		

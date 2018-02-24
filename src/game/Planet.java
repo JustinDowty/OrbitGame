@@ -8,7 +8,7 @@ import java.awt.Polygon;
  * This class conatins data for backgroud planet, sets its position as it drifts
  * across screen.
  * @author JustinDowty
- * @author Ted Lange
+ * @author Ted Lang
  * @author Alec Allain
  */
 public class Planet {

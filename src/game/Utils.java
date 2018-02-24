@@ -6,7 +6,7 @@ import java.util.Random;
 /**
  * Class contains utilities used in multiple classes.
  * @author Justin Dowty
- * @author Ted Lange
+ * @author Ted Lang
  * @author Alec Allain
  */
 public final class Utils {

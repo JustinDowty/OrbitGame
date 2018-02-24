@@ -13,7 +13,7 @@ import javax.swing.JPanel;
  * Alien class holds information for each alien object, controls
  * their location and movement, and determines size and image.
  * @author JustinDowty
- * @author Ted Lange
+ * @author Ted Lang
  * @author Alec Allain
  */
 public class Alien extends JPanel {
@@ -232,6 +232,13 @@ public class Alien extends JPanel {
 	 */
 	public int getWidth() {
 		return (int) this.size.getWidth();
+	}
+	
+	/**
+	 * @return Alien's x speed.
+	 */
+	public int getxSpeed() {
+		return (int) this.xSpeed;
 	}
 	
 	/**

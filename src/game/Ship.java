@@ -10,7 +10,7 @@ import javax.swing.JPanel;
  * This class defines ship object and contains information on its location 
  * and firing status.
  * @author JustinDowty
- * @author Ted Lange
+ * @author Ted Lang
  * @author Alec Allain
  */
 public class Ship extends JPanel {
@@ -159,7 +159,8 @@ public class Ship extends JPanel {
 	 * Moves ship up.
 	 */
 	public void moveUp() {
-		if (this.yLocation > 0) {
+		// Top Bounds
+		if (this.yLocation > 250) {
 			this.yLocation -= speed;
 		}
 		if (!firing) {

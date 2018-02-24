@@ -12,7 +12,7 @@ import javax.swing.JPanel;
  * This class is the main game engine. It is the panel that contains 
  * the game as well as keeping track of game data and updates.
  * @author JustinDowty
- * @author Ted Lange
+ * @author Ted Lang
  * @author Alec Allain
  */
 public class OrbitGame extends JPanel {
@@ -317,7 +317,8 @@ public class OrbitGame extends JPanel {
 				&& blastXcoordRight > alienXcoordLeft) 
 				&& (blastYcoordTop < alienYcoordBottom 
 						&& blastYcoordBottom 
-						> alienYcoordTop)) {
+						> alienYcoordTop)
+				&& ship.isFiring()) {
 			ship.cancelBlast();
 			ScorePanel.setFireButtonColor(Color.RED);
 			alien.decreaseHealth();

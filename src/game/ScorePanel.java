@@ -14,7 +14,7 @@ import javax.swing.border.Border;
  * This class initializes score panel and contains methods to update
  * panel based on current score.
  * @author JustinDowty
- * @author Ted Lange
+ * @author Ted Lang
  * @author Alec Allain
  */
 public class ScorePanel extends JPanel {
@@ -152,7 +152,12 @@ public class ScorePanel extends JPanel {
 	 * multiplier of aliens killed.
 	 */
 	public static void updateScore() {
-		int s = meteorsDodged * aliensKilled;
+		int s;
+		if (aliensKilled == 0) {
+			s = meteorsDodged;
+		} else {
+			s = meteorsDodged * aliensKilled;
+		}
 		score.setText("" + s);
 	}
 	

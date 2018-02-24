@@ -19,23 +19,11 @@ import javax.swing.WindowConstants;
  * of the game. The main loop is found in this class to update screen
  * as the game is played.
  * @author JustinDowty
- * @author Ted Lange
+ * @author Ted Lang
  * @author Alec Allain
  */
 public class MainGUI extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
-	/**
-	 * Menu item for restarting game.
-	 */
-	private JMenuItem restartItem;
-	/**
-	 * Menu bar for frame.
-	 */
-	private JMenuBar menuBar;
-	/**
-	 * File menu for frame.
-	 */
-	private JMenu fileMenu;
 	/**
 	 * Instance of OrbitGame to run game engine.
 	 */
@@ -45,14 +33,7 @@ public class MainGUI extends JFrame implements ActionListener {
 	 * Constructor initializes new game and adds components to frame.
 	 */
 	public MainGUI() {
-		game = new OrbitGame();
-        menuBar = new JMenuBar();
-        fileMenu = new JMenu("File");
-        restartItem = new JMenuItem("Restart");
-        restartItem.addActionListener(this);
-        this.setJMenuBar(menuBar);
-        fileMenu.add(restartItem);
-        menuBar.add(fileMenu);        
+		game = new OrbitGame();     
         JPanel scorePanel = new ScorePanel();
         this.setLayout(new BorderLayout());
         this.add(scorePanel, BorderLayout.EAST);
@@ -65,17 +46,6 @@ public class MainGUI extends JFrame implements ActionListener {
         this.setResizable(false);
         this.setLocationRelativeTo(null);
         this.setVisible(true);        
-	}
-	
-	/**
-	 * Action performed resets game when restartItem is clicked in menu.
-	 * @param e ActionEvent instance.
-	 */
-	public void actionPerformed(final ActionEvent e) {
-		if (e.getSource() == restartItem) {	
-			game.setPlaying(false);	
-			this.beginGame();
-		}
 	}
 	
 	/**
