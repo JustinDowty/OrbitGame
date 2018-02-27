@@ -1,15 +1,9 @@
 package game;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
@@ -22,7 +16,7 @@ import javax.swing.WindowConstants;
  * @author Ted Lang
  * @author Alec Allain
  */
-public class MainGUI extends JFrame implements ActionListener {
+public class MainGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 	/**
 	 * Instance of OrbitGame to run game engine.
