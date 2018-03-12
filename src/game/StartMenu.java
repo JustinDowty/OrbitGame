@@ -25,7 +25,6 @@ import javax.swing.JLabel;
  * @author Ted Lang
  */
 public class StartMenu extends JFrame implements ActionListener {
-
 	/**
 	 * Start button.
 	 */
@@ -78,6 +77,11 @@ public class StartMenu extends JFrame implements ActionListener {
 	 * Title Label.
 	 */
 	private JLabel orbit;
+	
+	/**
+	 * Current player initials.
+	 */
+	private String currPlayer;
 	
 	/**
 	 * Constructor for class sets up menus and displays frame.
@@ -174,7 +178,8 @@ public class StartMenu extends JFrame implements ActionListener {
 	public void actionPerformed(final ActionEvent e) {
 		if (e.getSource() == start) {
 			this.dispose();
-			MainGUI gui = new MainGUI();
+			enterInitialsDialog();
+			MainGUI gui = new MainGUI(currPlayer);
 			gui.beginGame();
 		}
 		
@@ -209,14 +214,23 @@ public class StartMenu extends JFrame implements ActionListener {
 		if (e.getSource() == quit || e.getSource() == quitItem) {
 			System.exit(1);
 		}
-}
+	}
+	
+	public void enterInitialsDialog() {
+		currPlayer = JOptionPane.showInputDialog("Enter your initials");
+		while (currPlayer.length() != 3|| currPlayer.charAt(0) == ' '
+				|| currPlayer.charAt(1) == ' ' || currPlayer.charAt(2) == ' ') {
+			JOptionPane.showMessageDialog(this, "Enter your initials in three digits!");
+			currPlayer = JOptionPane.showInputDialog("Enter your initials");
+		}
+	}
 
 	/**
 	 * Main method begins game.
 	 * @param args Unused standard parameter for main class.
 	 */
 	public static void main(final String[] args) {
-		StartMenu startUp = new StartMenu();
+		new StartMenu();
 		
 	}	
 }

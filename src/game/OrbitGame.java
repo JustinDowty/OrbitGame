@@ -20,15 +20,15 @@ public class OrbitGame extends JPanel {
 	/**
 	 * Window width of game panel.
 	 */
-	public static final int WINDOW_WIDTH = 1100;
+	private int windowWidth;
 	/**
 	 * Window height of game panel.
 	 */
-	public static final int WINDOW_HEIGHT = 800;
+	private int windowHeight;
 	/**
 	 * Margin from edge of panel to edge of frame.
 	 */
-	public static final int MARGIN = 400; 
+	private int margin; 
 	/**
 	 * ArrayList of meteors in game.
 	 */
@@ -78,10 +78,13 @@ public class OrbitGame extends JPanel {
 	 * Constructor resets game, generates stars for background,
 	 * and sets size and background of panel.
 	 */
-	public OrbitGame() {
+	public OrbitGame(int windowWidth, int windowHeight, int margin) {
+		this.windowWidth = windowWidth;
+		this.windowHeight = windowHeight;
+		this.margin = margin;
 		reset();
 		generateStars();
-		this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+		this.setSize(windowWidth, windowHeight);
 		this.setBackground(Color.BLACK);
 	}
 	
@@ -89,15 +92,13 @@ public class OrbitGame extends JPanel {
 	 * Initializes game components and resets score panel.
 	 */
 	public void reset() {
-		planet = new Planet();
-		ship = new Ship();
+		planet = new Planet(windowHeight);
+		ship = new Ship(windowWidth, windowHeight, margin);
 		meteorArray = new ArrayList<Meteor>();
 		alienArray = new ArrayList<Alien>();
-		ScorePanel.resetMeteorsDodged();
-		ScorePanel.resetAliensKilled();
 		playing = true;
 		// Adds one meteor to start game off
-		meteorArray.add(new Meteor());
+		meteorArray.add(new Meteor(windowWidth, windowHeight, margin));
 		currentKey = 'S';
 	}
 	
@@ -106,7 +107,7 @@ public class OrbitGame extends JPanel {
 	 * @param g Instance of Graphics.
 	 */
 	public void paint(final Graphics g) {
-		dbImage = createImage(WINDOW_WIDTH, WINDOW_HEIGHT);
+		dbImage = createImage(windowWidth, windowHeight);
 		dbg = dbImage.getGraphics();
 		paintComponent(dbg);
 		g.drawImage(dbImage, 0, 0, this);
@@ -144,20 +145,25 @@ public class OrbitGame extends JPanel {
 	 * and checks for objects interacting.
 	 * @param currTime Current time in game.
 	 */
-	public void update(final int currTime) {
+	public void update(final int currTime, ScorePanel scorePanel) {
 		// Adds a new meteor to game until enough are in game,
 		// those 20 get recycled
 		if (currTime % 500 == 0 && meteorArray.size() < 6) {
-			meteorArray.add(new Meteor());
+			meteorArray.add(new Meteor(windowWidth, windowHeight, margin));
 		}
 		if (currTime % 50 == 0 && alienArray.size() < 2) {
-			alienArray.add(new Alien());
+			alienArray.add(new Alien(windowWidth, windowHeight, margin));
 		}
 		for (Meteor meteor : meteorArray) {
 			meteor.update();
 			if (checkIfShipHit(meteor)) {
 				ship.setHealing(true);
 				hitTime = currTime;
+			}
+			// Increments score panel, resets at random interval
+			if (meteor.getyLocation() > windowHeight) { 
+				scorePanel.incrementMeteorsDodged();
+				meteor.reset();		
 			}
 			checkIfBlastHit(meteor);
 		}
@@ -168,6 +174,12 @@ public class OrbitGame extends JPanel {
 				hitTime = currTime;
 			}
 			checkIfBlastHit(alien);
+			if (alien.getHealth() == 0) {
+				alien.reset();
+				alien.resetHealth();
+				alien.setSize();
+				scorePanel.incrementAliensKilled();
+			}
 		}
 		if (currTime - hitTime > 1000 && ship.isHealing()) {
 			ship.setHealing(false);
@@ -349,7 +361,7 @@ public class OrbitGame extends JPanel {
 	}
 	
 	/**
-	 * @return Whther game is being played currently.
+	 * @return Whether game is being played currently.
 	 */
 	public boolean getPlaying() {
 		return this.playing;

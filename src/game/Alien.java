@@ -69,12 +69,27 @@ public class Alien extends JPanel {
 	 * Alien's ImageIcon.
 	 */
 	private ImageIcon i;
+	/**
+	 * Window width of game panel.
+	 */
+	private int windowWidth;
+	/**
+	 * Window height of game panel.
+	 */
+	private int windowHeight;
+	/**
+	 * Margin from edge of panel to edge of frame.
+	 */
+	private int margin; 
 	
 	/**
 	 * Constructor sets ImageIcon i, sets health to full, and resets alien
 	 * via setSize() and reset() functions.
 	 */
-	public Alien() {
+	public Alien(int windowWidth, int windowHeight, int margin) {
+		this.windowWidth = windowWidth;
+		this.windowHeight = windowHeight;
+		this.margin = margin;
 		i = new ImageIcon("alien.png");
 		this.health = 2;
 		this.setSize();
@@ -87,7 +102,7 @@ public class Alien extends JPanel {
 	public void setLocation() {
 		// Subtracts end margin (room for movement) and meteor size
 		this.xLocation = rand.nextInt((int) 
-				(OrbitGame.WINDOW_WIDTH - OrbitGame.MARGIN 
+				(windowWidth - margin 
 						- this.size.getWidth()));
 		this.initxLocation = this.xLocation;
 		this.yLocation = rand.nextInt(100);
@@ -167,7 +182,7 @@ public class Alien extends JPanel {
 	 */
 	public void update(final int currTime) {
 		int r = rand.nextInt(200) + 5;
-		if (this.yLocation <= OrbitGame.WINDOW_HEIGHT) {
+		if (this.yLocation <= windowHeight) {
 			this.yLocation += this.ySpeed; // Moves alien
 			if (!this.firing) { // Moves blast
 				this.blastyLocation += this.ySpeed;
@@ -176,9 +191,9 @@ public class Alien extends JPanel {
 			}
 		}
 		 // additional 100 to assure edge is covered
-		if (this.yLocation <= OrbitGame.WINDOW_HEIGHT / 2 
+		if (this.yLocation <= windowHeight / 2 
 				&& this.xLocation 
-				< this.initxLocation + OrbitGame.MARGIN) {
+				< this.initxLocation + margin) {
 			this.xLocation += this.xSpeed; // Moves x direction
 			if (!this.firing) { // Moves blast
 				this.blastxLocation += this.xSpeed;
@@ -187,10 +202,10 @@ public class Alien extends JPanel {
 		} else if (currTime % r == 0) {
 			this.firing = true;
 		}
-		if (yLocation > OrbitGame.WINDOW_HEIGHT) { 
+		if (yLocation > windowHeight) { 
 			this.reset(); // Resets the alien when end is reached
 		}
-		if (blastyLocation > OrbitGame.WINDOW_HEIGHT) {
+		if (blastyLocation > windowHeight) {
 			this.firing = false; // Resets blast when end is reached
 			this.blastxLocation = (int) (this.xLocation 
 					+ this.size.getWidth() / 2);
@@ -242,15 +257,23 @@ public class Alien extends JPanel {
 	}
 	
 	/**
+	 * @return Alien's health.
+	 */
+	public int getHealth(){
+		return this.health;
+	}
+	
+	/**
 	 * Decreases alien's health by 1, resets alien if destroyed.
 	 */
 	public void decreaseHealth() {
 		this.health--;
-		if (this.health == 0) {
-			this.reset();
-			this.setSize();
-			this.health = 2;
-			ScorePanel.incrementAliensKilled();
-		}
+	}
+	
+	/**
+	 * Resets alien's health to 2 when killed.
+	 */
+	public void resetHealth(){
+		this.health = 2;
 	}
 }

@@ -62,25 +62,40 @@ public class Ship extends JPanel {
 	 * Ship's ImageIcon.
 	 */
 	private ImageIcon i;
+	/**
+	 * The width of the window for game.
+	 */
+	private int windowWidth;
+	/**
+	 * The height of the window for game.
+	 */
+	private int windowHeight;
+	/**
+	 * The end margin of the window for game.
+	 */
+	private int margin;
 	
 	/**
 	 * Constructor sets health to full, healing to false, and 
 	 * resets location.
 	 */
-	public Ship() {
+	public Ship(int windowWidth, int windowHeight, int margin) {
+		this.windowWidth = windowWidth;
+		this.windowHeight = windowHeight;
+		this.margin = margin;
 		this.health = 5;
 		this.healing = false;
 		setLocation();
 	}
 	
 	/**
-	 * Sets shipts location to initial spot on screen.
+	 * Sets ships location to initial spot on screen.
 	 */
 	public void setLocation() {
-		this.xLocation = OrbitGame.WINDOW_WIDTH / 2 + OrbitGame.MARGIN;
-		this.yLocation = OrbitGame.WINDOW_HEIGHT - 3 * this.height;
+		this.xLocation = windowWidth / 2 + margin;
+		this.yLocation = windowHeight - 3 * this.height;
 		this.blastxLocation = this.xLocation + width / 2;
-		this.blastyLocation = OrbitGame.WINDOW_HEIGHT - 3 * this.height;
+		this.blastyLocation = windowHeight - 3 * this.height;
 	}
 	
 	/**
@@ -123,7 +138,7 @@ public class Ship extends JPanel {
 	 * Moves ship to the right.
 	 */
 	public void moveRight() {
-		if (this.xLocation < OrbitGame.WINDOW_WIDTH - 2 * width) {
+		if (this.xLocation < windowWidth - 2 * width) {
 			this.xLocation += speed;
 		}
 		if (!firing) {
@@ -135,7 +150,7 @@ public class Ship extends JPanel {
 	 * Moves ship to the left.
 	 */
 	public void moveLeft() {
-		if (this.xLocation > OrbitGame.MARGIN + 10) {
+		if (this.xLocation > margin + 10) {
 			this.xLocation -= speed;
 		}
 		if (!firing) {
@@ -147,7 +162,7 @@ public class Ship extends JPanel {
 	 * Moves ship down.
 	 */
 	public void moveDown() {
-		if (this.yLocation < OrbitGame.WINDOW_HEIGHT - 3 * height) {
+		if (this.yLocation < windowHeight - 3 * height) {
 			this.yLocation += speed;
 		}
 		if (!firing) {
@@ -191,7 +206,7 @@ public class Ship extends JPanel {
 			this.firing = false; // done with blast path
 			this.canFire = true; // can fire now
 			 // puts blast off screen
-			this.blastyLocation = OrbitGame.WINDOW_HEIGHT;
+			this.blastyLocation = windowHeight;
 		}
 	}
 	

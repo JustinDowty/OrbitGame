@@ -22,11 +22,11 @@ public class ScorePanel extends JPanel {
 	/**
 	 * Current Meteors dodged.
 	 */
-	private static int meteorsDodged = 0;
+	private int meteorsDodged = 0;
 	/**
 	 * Current Aliens killed.
 	 */
-	private static int aliensKilled = 0;
+	private int aliensKilled = 0;
 	/**
 	 * JLabel for fire button.
 	 */
@@ -34,25 +34,28 @@ public class ScorePanel extends JPanel {
 	/**
 	 * JLabel for Meteor count.
 	 */
-	private static JLabel meteors 
+	private JLabel meteors 
 		= new JLabel("0", SwingConstants.CENTER);
 	/**
 	 * JLabel for Alien count.
 	 */
-	private static JLabel aliens 
+	private JLabel aliens 
 		= new JLabel("0", SwingConstants.CENTER);
 	/**
 	 * JLabel for score count.
 	 */
-	private static JLabel score 
+	private JLabel score 
 		= new JLabel("0", SwingConstants.CENTER);
-	
+	/**
+	 * Current player score;
+	 */
+	private int currScore = 0;
 	/**
 	 * Initializes score panel with labels.
 	 */
-	public ScorePanel() {		
+	public ScorePanel(int windowHeight) {		
 		this.setPreferredSize(new Dimension(295, 
-				OrbitGame.WINDOW_HEIGHT));
+				windowHeight));
 		this.setBackground(Color.CYAN);
 		Border border 
 			= BorderFactory.createLineBorder(Color.DARK_GRAY, 15);
@@ -118,7 +121,7 @@ public class ScorePanel extends JPanel {
 	/**
 	 * Increments number of meteors dodged, updates text field.
 	 */
-	public static void incrementMeteorsDodged() {
+	public void incrementMeteorsDodged() {
 		meteorsDodged++;
 		meteors.setText("" + meteorsDodged);
 	}
@@ -126,7 +129,7 @@ public class ScorePanel extends JPanel {
 	/**
 	 * Resets meteors dodged to 0, updates text field.
 	 */
-	public static void resetMeteorsDodged() {
+	public void resetMeteorsDodged() {
 		meteorsDodged = 0;
 		meteors.setText("0");
 	}
@@ -134,7 +137,7 @@ public class ScorePanel extends JPanel {
 	/**
 	 * Increments aliens killed, updates text field.
 	 */
-	public static void incrementAliensKilled() {
+	public void incrementAliensKilled() {
 		aliensKilled++;
 		aliens.setText("" + aliensKilled);
 	}
@@ -142,7 +145,7 @@ public class ScorePanel extends JPanel {
 	/**
 	 * Resets aliens killed to 0, updates text field.
 	 */
-	public static void resetAliensKilled() {
+	public void resetAliensKilled() {
 		aliensKilled = 0;
 		aliens.setText("0");
 	}
@@ -151,14 +154,13 @@ public class ScorePanel extends JPanel {
 	 * Updates score text field. Score is meteors dodged times a 
 	 * multiplier of aliens killed.
 	 */
-	public static void updateScore() {
-		int s;
+	public void updateScore() {
 		if (aliensKilled == 0) {
-			s = meteorsDodged;
+			currScore = meteorsDodged;
 		} else {
-			s = meteorsDodged * aliensKilled;
+			currScore = meteorsDodged * aliensKilled;
 		}
-		score.setText("" + s);
+		score.setText("" + currScore);
 	}
 	
 	/**
@@ -169,6 +171,14 @@ public class ScorePanel extends JPanel {
 		fireButton.setForeground(color);
 		Border border = BorderFactory.createLineBorder(color, 10);
 		fireButton.setBorder(border);
+	}
+	
+	/**
+	 * Array is [currScore, meteorsDodged, aliensKilled]
+	 * @return Current score in an array.
+	 */
+	public int[] getCurrentScore(){
+		return new int[] {currScore, meteorsDodged, aliensKilled};
 	}
 
 }

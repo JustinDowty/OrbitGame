@@ -17,6 +17,18 @@ import javax.swing.JPanel;
  */
 public class Meteor extends JPanel {
 	/**
+	 * Window width of game panel.
+	 */
+	private int windowWidth;
+	/**
+	 * Window height of game panel.
+	 */
+	private int windowHeight;
+	/**
+	 * Margin from edge of panel to edge of frame.
+	 */
+	private int margin; 
+	/**
 	 * Meteor's current X location.
 	 */
 	private int xLocation;
@@ -52,7 +64,10 @@ public class Meteor extends JPanel {
 	/**
 	 * Constructor initalizes meteor. Sets random image and resets.
 	 */
-	public Meteor() {
+	public Meteor(int windowWidth, int windowHeight, int margin) {
+		this.windowWidth = windowWidth;
+		this.windowHeight = windowHeight;
+		this.margin = margin;
 		int r = rand.nextInt(3);
 		if (r == 0) {
 			i = new ImageIcon("meteor.png");
@@ -69,8 +84,8 @@ public class Meteor extends JPanel {
 	 */
 	public void setLocation() {
 		// Subtracts end margin (room for movement) and meteor size
-		this.xLocation = rand.nextInt((int) (OrbitGame.WINDOW_WIDTH 
-				- OrbitGame.MARGIN - size.getWidth()));
+		this.xLocation = rand.nextInt((int) (windowWidth 
+				- margin - size.getWidth()));
 		this.initxLocation = xLocation;
 		this.yLocation = rand.nextInt(100);
 	}
@@ -117,19 +132,14 @@ public class Meteor extends JPanel {
 	 * has reached end of screen.
 	 */
 	public void update() {
-		if (yLocation <= OrbitGame.WINDOW_HEIGHT) {
+		if (yLocation <= windowHeight) {
 			yLocation += ySpeed;
 		}
-		if (yLocation <= OrbitGame.WINDOW_HEIGHT / 2 
+		if (yLocation <= windowHeight / 2 
 				&& xLocation < initxLocation 
-				+ OrbitGame.MARGIN) {
+				+ margin) {
 			xLocation += xSpeed;
 			xSpeed -= 2 * xSpeed / 30;
-		}
-		// Increments score panel, resets at random interval
-		if (yLocation > OrbitGame.WINDOW_HEIGHT) { 
-			ScorePanel.incrementMeteorsDodged();
-			this.reset();		
 		}
 	}
 	

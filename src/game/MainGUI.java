@@ -3,6 +3,13 @@ package game;
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -22,19 +29,44 @@ public class MainGUI extends JFrame {
 	 * Instance of OrbitGame to run game engine.
 	 */
 	private OrbitGame game;
-
+	/**
+	 * Window width of game panel.
+	 */
+	private final int windowWidth = 1100;
+	/**
+	 * Window height of game panel.
+	 */
+	private final int windowHeight = 800;
+	/**
+	 * Margin from edge of panel to edge of frame.
+	 */
+	private final int margin = 400; 
+	/**
+	 * Score Panel instance.
+	 */
+	private ScorePanel scorePanel;
+	/**
+	 * Whether or not game is paused.
+	 */
+	private boolean paused = false;
+	/**
+	 * Current user initials.
+	 */
+	private String currPlayer;
 	/**
 	 * Constructor initializes new game and adds components to frame.
-	 */
-	public MainGUI() {
-		game = new OrbitGame();     
-        JPanel scorePanel = new ScorePanel();
+	 * Takes entered initials in constructor.
+	 */	
+	public MainGUI(String currPlayer) {
+		this.currPlayer = currPlayer;
+		game = new OrbitGame(windowWidth, windowHeight, margin);     
+        scorePanel = new ScorePanel(windowHeight);
         this.setLayout(new BorderLayout());
         this.add(scorePanel, BorderLayout.EAST);
         this.add(game, BorderLayout.CENTER);
         this.setFocusable(true);
         this.setUpKeyListener();
-        this.setSize(OrbitGame.WINDOW_WIDTH + 300, OrbitGame.WINDOW_HEIGHT);
+        this.setSize(windowWidth + 300, windowHeight);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setTitle("ORBIT");
         this.setResizable(false);
@@ -60,6 +92,8 @@ public class MainGUI extends JFrame {
         	        game.setCurrentKey('D');
         	    } else if (e.getKeyCode() == 32) { // Space bar
         	    	game.getShip().initiateBlast();
+        	    } else if (e.getKeyCode() == 80) { // P for paused
+        	    	paused = !paused;
         	    }
         	}
         	@Override
@@ -81,18 +115,29 @@ public class MainGUI extends JFrame {
 			@Override
 			public void run() {
 				game.reset();
+				scorePanel.resetMeteorsDodged();
+				scorePanel.resetAliensKilled();
 				int currTime = 0;
 		        while (game.getPlaying()) {
-		            game.update(currTime);
-		            game.repaint();
-		            ScorePanel.updateScore();
-		            currTime += 10;
-					try {
-						Thread.sleep(11);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+		        	if (paused) {
+		        		try {
+		        			Thread.sleep(11);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+		        	} else {
+		        		game.update(currTime, scorePanel);
+			            game.repaint();
+			            scorePanel.updateScore();
+			            currTime += 10;
+						try {
+							Thread.sleep(11);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+		        	}
 		        }
+		        addToScores();
 		        lostDialog();
 			}			
 		};
@@ -121,7 +166,65 @@ public class MainGUI extends JFrame {
 			System.exit(0);
 		} else if (n == JOptionPane.CANCEL_OPTION) {
 			this.dispose();
-			StartMenu m = new StartMenu();
+			new StartMenu();
+		}
+	}
+	
+	/**
+	 * Adds current score to High Scores.
+	 */
+	public void addToScores(){
+		File file = new File("HighScores.txt");
+		if (!file.exists()) {
+			try {
+				BufferedWriter bw = new BufferedWriter(new FileWriter("HighScores.txt"));
+				bw.write(currPlayer + " " + scorePanel.getCurrentScore()[0] 
+						+ " " + scorePanel.getCurrentScore()[1] 
+						+ " " + scorePanel.getCurrentScore()[2] + "\r\n");
+				bw.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+		else {
+			try{
+				String line = null;
+				Boolean hasWritten = false;
+				BufferedWriter bw = new BufferedWriter(new FileWriter("Temp.txt"));
+				BufferedReader br = new BufferedReader(new FileReader("HighScores.txt"));
+				int currLine = 0;
+				while (currLine < 5){
+					line = br.readLine();
+					if (line == null) {
+						bw.write(currPlayer + " " + scorePanel.getCurrentScore()[0] 
+								+ " " + scorePanel.getCurrentScore()[1] 
+								+ " " + scorePanel.getCurrentScore()[2] + "\r\n");	
+						break;
+					}
+					String[] splitLine = line.split(" ");
+					if (!hasWritten && Integer.parseInt(splitLine[1])
+							<= scorePanel.getCurrentScore()[0]) {
+						bw.write(currPlayer + " " + scorePanel.getCurrentScore()[0] 
+								+ " " + scorePanel.getCurrentScore()[1] 
+								+ " " + scorePanel.getCurrentScore()[2] + "\r\n");	
+						hasWritten = true;
+					}
+					if (currLine < 4 || !hasWritten) {
+						bw.write(line + "\r\n");
+					}
+					currLine++;
+				}
+				bw.close();
+				br.close();
+				File oldFile = new File("HighScores.txt");
+				oldFile.delete();
+				File tempFile = new File("Temp.txt");
+				File newFile = new File("HighScores.txt");
+				tempFile.renameTo(newFile);
+			}
+			catch (Exception ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
 }

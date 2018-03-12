@@ -40,10 +40,10 @@ public class Planet {
 	/**
 	 * Constructor sets speed and initial location. 
 	 */
-	public Planet() {
+	public Planet(int windowHeight) {
 		this.driftSpeed = 1;
 		this.xLocation = -300;
-		this.yLocation = OrbitGame.WINDOW_HEIGHT - 400;
+		this.yLocation = windowHeight - 400;
 		
 		int[] xCoords = {0, 10, 20, 100, 180, 360, 400, 50};
 		int[] yCoords = {900, 600, 600, 500, 600, 500, 650, 900};
