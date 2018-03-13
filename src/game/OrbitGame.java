@@ -93,7 +93,7 @@ public class OrbitGame extends JPanel {
 	 */
 	public void reset() {
 		planet = new Planet(windowHeight);
-		ship = new Ship(windowWidth, windowHeight, margin);
+		ship = new Ship(windowWidth, windowHeight, margin, BlastTypes.MULTI_BLAST); // UPDATES SHIPS BLAST PARAMETER
 		meteorArray = new ArrayList<Meteor>();
 		alienArray = new ArrayList<Alien>();
 		playing = true;
@@ -149,7 +149,7 @@ public class OrbitGame extends JPanel {
 		// Adds a new meteor to game until enough are in game,
 		// those 20 get recycled
 		if (currTime % 500 == 0 && meteorArray.size() < 6) {
-			meteorArray.add(new Meteor(windowWidth, windowHeight, margin));
+			//meteorArray.add(new Meteor(windowWidth, windowHeight, margin));
 		}
 		if (currTime % 50 == 0 && alienArray.size() < 2) {
 			alienArray.add(new Alien(windowWidth, windowHeight, margin));
@@ -174,7 +174,7 @@ public class OrbitGame extends JPanel {
 				hitTime = currTime;
 			}
 			checkIfBlastHit(alien);
-			if (alien.getHealth() == 0) {
+			if (alien.getHealth() < 1) {
 				alien.reset();
 				alien.resetHealth();
 				alien.setSize();
@@ -283,28 +283,30 @@ public class OrbitGame extends JPanel {
 	 * @param meteor Meteor being checked for interaction.
 	 */
 	public void checkIfBlastHit(final Meteor meteor) {
-		int blastXcoordLeft = ship.getBlastxLocation();
-		int blastXcoordRight = ship.getBlastxLocation() 
-				+ ship.getWidth() / 2;
-		int meteorXcoordLeft = meteor.getxLocation();
-		int meteorXcoordRight = meteor.getxLocation() 
-				+ meteor.getWidth();
-		
-		int blastYcoordTop = ship.getBlastyLocation();
-		int blastYcoordBottom = ship.getBlastyLocation() 
-				+ ship.getHeight() / 2;
-		int meteorYcoordTop = meteor.getyLocation();
-		int meteorYcoordBottom = meteor.getyLocation() 
-				+ meteor.getWidth();
-		
-		if ((blastXcoordLeft < meteorXcoordRight 
-				&& blastXcoordRight > meteorXcoordLeft) 
-				&& (blastYcoordTop < meteorYcoordBottom 
-					&& blastYcoordBottom 
-					> meteorYcoordTop)) {
-			meteor.reset();
-			ship.cancelBlast();
-			ScorePanel.setFireButtonColor(Color.RED);
+		for (int i = 0; i < ship.getBlastxLocations().length; i++) {
+			int blastXcoordLeft = ship.getBlastxLocations()[i];
+			int blastXcoordRight = ship.getBlastxLocations()[i] 
+					+ ship.getWidth() / 2;
+			int meteorXcoordLeft = meteor.getxLocation();
+			int meteorXcoordRight = meteor.getxLocation() 
+					+ meteor.getWidth();
+			
+			int blastYcoordTop = ship.getBlastyLocations()[i];
+			int blastYcoordBottom = ship.getBlastyLocations()[i] 
+					+ ship.getHeight() / 2;
+			int meteorYcoordTop = meteor.getyLocation();
+			int meteorYcoordBottom = meteor.getyLocation() 
+					+ meteor.getWidth();
+			
+			if ((blastXcoordLeft < meteorXcoordRight 
+					&& blastXcoordRight > meteorXcoordLeft) 
+					&& (blastYcoordTop < meteorYcoordBottom 
+						&& blastYcoordBottom 
+						> meteorYcoordTop)) {
+				meteor.reset();
+				ship.cancelBlast(i);
+				ScorePanel.setFireButtonColor(Color.RED);
+			}
 		}
 	}
 	
@@ -313,27 +315,29 @@ public class OrbitGame extends JPanel {
 	 * @param alien Alien being checked for interaction.
 	 */
 	public void checkIfBlastHit(final Alien alien) {
-		int blastXcoordLeft = ship.getBlastxLocation();
-		int blastXcoordRight = ship.getBlastxLocation() 
-				+ ship.getWidth() / 2;
-		int alienXcoordLeft = alien.getxLocation();
-		int alienXcoordRight = alien.getxLocation() + alien.getWidth();
-		
-		int blastYcoordTop = ship.getBlastyLocation();
-		int blastYcoordBottom = ship.getBlastyLocation() 
-				+ ship.getHeight() / 2;
-		int alienYcoordTop = alien.getyLocation();
-		int alienYcoordBottom = alien.getyLocation() + alien.getWidth();
-		
-		if ((blastXcoordLeft < alienXcoordRight 
-				&& blastXcoordRight > alienXcoordLeft) 
-				&& (blastYcoordTop < alienYcoordBottom 
-						&& blastYcoordBottom 
-						> alienYcoordTop)
-				&& ship.isFiring()) {
-			ship.cancelBlast();
-			ScorePanel.setFireButtonColor(Color.RED);
-			alien.decreaseHealth();
+		for (int i = 0; i < ship.getBlastxLocations().length; i++) {
+			int blastXcoordLeft = ship.getBlastxLocations()[i];
+			int blastXcoordRight = ship.getBlastxLocations()[i] 
+					+ ship.getWidth() / 2;
+			int alienXcoordLeft = alien.getxLocation();
+			int alienXcoordRight = alien.getxLocation() + alien.getWidth();
+			
+			int blastYcoordTop = ship.getBlastyLocations()[i];
+			int blastYcoordBottom = ship.getBlastyLocations()[i] 
+					+ ship.getHeight() / 2;
+			int alienYcoordTop = alien.getyLocation();
+			int alienYcoordBottom = alien.getyLocation() + alien.getWidth();
+			
+			if ((blastXcoordLeft < alienXcoordRight 
+					&& blastXcoordRight > alienXcoordLeft) 
+					&& (blastYcoordTop < alienYcoordBottom 
+							&& blastYcoordBottom 
+							> alienYcoordTop)
+					&& ship.isFiring()) {
+				ship.cancelBlast(i);
+				ScorePanel.setFireButtonColor(Color.RED);
+				alien.decreaseHealth();
+			}
 		}
 	}
 	

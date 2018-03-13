@@ -23,13 +23,21 @@ public class Ship extends JPanel {
 	 */
 	private int yLocation;
 	/**
-	 * Current blast X location.
+	 * Current blasts X locations.
 	 */
-	private int blastxLocation;
+	private int[] blastxLocations;
 	/**
-	 * Current blast Y location.
+	 * Current blasts Y locations.
 	 */
-	private int blastyLocation;
+	private int[] blastyLocations;
+	/**
+	 * Whether or not a specific blast is still firing.
+	 */
+	private boolean[] blastsFiring;
+	/**
+	 * Ships blast type.
+	 */
+	private BlastTypes blastType;
 	/**
 	 * Whether or not ship can fire.
 	 */
@@ -79,7 +87,21 @@ public class Ship extends JPanel {
 	 * Constructor sets health to full, healing to false, and 
 	 * resets location.
 	 */
-	public Ship(int windowWidth, int windowHeight, int margin) {
+	public Ship(int windowWidth, int windowHeight, int margin, BlastTypes blastType) {
+		this.blastType = blastType;
+		if (blastType == BlastTypes.STANDARD) {
+			blastxLocations = new int[1];
+			blastyLocations = new int[1];
+			blastsFiring = new boolean[1];
+		} else if (blastType == BlastTypes.MULTI_BLAST
+				|| blastType == BlastTypes.SIDE_BLASTS) {
+			blastxLocations = new int[3];
+			blastyLocations = new int[3];
+			blastsFiring = new boolean[3];
+		}
+		for (int i = 0; i < blastsFiring.length; i++) {
+			blastsFiring[i] = false;
+		}
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
 		this.margin = margin;
@@ -94,8 +116,9 @@ public class Ship extends JPanel {
 	public void setLocation() {
 		this.xLocation = windowWidth / 2 + margin;
 		this.yLocation = windowHeight - 3 * this.height;
-		this.blastxLocation = this.xLocation + width / 2;
-		this.blastyLocation = windowHeight - 3 * this.height;
+		for (int i = 0; i < blastxLocations.length; i++) {
+			this.blastyLocations[i] = windowHeight + 100;
+		}
 	}
 	
 	/**
@@ -108,8 +131,16 @@ public class Ship extends JPanel {
 		} else {
 			i = new ImageIcon("ship.png");
 		}
-		g.setColor(Color.YELLOW);
-		g.fillRect(blastxLocation, blastyLocation, width / 2, height);
+		if (this.blastType == BlastTypes.STANDARD) {
+			g.setColor(Color.YELLOW);
+		} else if (this.blastType == BlastTypes.SIDE_BLASTS) {
+			g.setColor(Color.PINK);
+		} else if (this.blastType == BlastTypes.MULTI_BLAST) {
+			g.setColor(Color.MAGENTA);
+		}		
+		for (int i = 0; i < blastxLocations.length; i++) {
+			g.fillRect(blastxLocations[i], blastyLocations[i], width / 2, height);
+		}
 		i.paintIcon(this, g, xLocation, yLocation);
 		g.setColor(Color.GREEN);
 		g.fillRect(this.xLocation + this.width + 20, 
@@ -141,9 +172,6 @@ public class Ship extends JPanel {
 		if (this.xLocation < windowWidth - 2 * width) {
 			this.xLocation += speed;
 		}
-		if (!firing) {
-			this.blastxLocation = this.xLocation;
-		}
 	}
 	
 	/**
@@ -153,9 +181,6 @@ public class Ship extends JPanel {
 		if (this.xLocation > margin + 10) {
 			this.xLocation -= speed;
 		}
-		if (!firing) {
-			this.blastxLocation = this.xLocation;
-		}
 	}
 	
 	/**
@@ -164,9 +189,6 @@ public class Ship extends JPanel {
 	public void moveDown() {
 		if (this.yLocation < windowHeight - 3 * height) {
 			this.yLocation += speed;
-		}
-		if (!firing) {
-			this.blastyLocation = this.yLocation;
 		}
 	}
 	
@@ -178,9 +200,6 @@ public class Ship extends JPanel {
 		if (this.yLocation > 250) {
 			this.yLocation -= speed;
 		}
-		if (!firing) {
-			this.blastyLocation = this.yLocation;
-		}
 	}
 	
 	/**
@@ -189,8 +208,11 @@ public class Ship extends JPanel {
 	public void initiateBlast() {
 		if (this.canFire) {
 			// puts blast at ships position before firing
-			this.blastyLocation = this.yLocation; 
-			this.blastxLocation = this.xLocation;
+			for (int i = 0; i < blastxLocations.length; i++) {
+				this.blastxLocations[i] = this.xLocation;
+				this.blastyLocations[i] = this.yLocation;
+				blastsFiring[i] = true;
+			}
 			this.firing = true; // allowing blast to fly
 			this.canFire = false; // must wait to fire again
 		}
@@ -200,13 +222,36 @@ public class Ship extends JPanel {
 	 * Updates location of blast if firing.
 	 */
 	public void updateBlast() {
-		if (this.firing && this.blastyLocation > -20) {
-			this.blastyLocation -= 10;
-		} else {
+		boolean allFired = true;
+		for (int i = 0; i < blastxLocations.length; i++){
+			if (this.firing && this.blastyLocations[i] > -20 
+					&& blastsFiring[i] == true) {
+				allFired = false;
+				if (blastType == BlastTypes.SIDE_BLASTS 
+						&& i == 0){ //IGNORE MIDDLE BLAST
+					blastsFiring[i] = false;
+				} else {
+					this.blastyLocations[i] -= 10;
+				}
+				if (i > 0 && (blastType == BlastTypes.MULTI_BLAST
+						|| blastType == BlastTypes.SIDE_BLASTS)) {
+					this.blastxLocations[1] += 5;
+					this.blastxLocations[2] -= 5;
+				}
+			} else {
+				blastsFiring[i] = false;
+				// puts blast off screen !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				this.blastyLocations[i] = windowHeight + 100;
+			}
+		}
+		if (allFired) {
 			this.firing = false; // done with blast path
 			this.canFire = true; // can fire now
-			 // puts blast off screen
-			this.blastyLocation = windowHeight;
+			for (int j = 0; j < blastsFiring.length; j++) {
+				blastsFiring[j] = false;
+				// puts blast off screen !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				this.blastyLocations[j] = windowHeight + 100;
+			}
 		}
 	}
 	
@@ -225,8 +270,17 @@ public class Ship extends JPanel {
 	/**
 	 * Cancels blast by setting firing to false.
 	 */
-	public void cancelBlast() {
-		this.firing = false;
+	public void cancelBlast(int b) {
+		blastsFiring[b] = false;
+		boolean allFired = true;
+		for (int i = 0; i < blastsFiring.length; i++) {
+			if (blastsFiring[i]) {
+				allFired = false;
+			}
+		}
+		if (allFired) {
+			this.firing = false;
+		}
 	}
 	
 	/**
@@ -246,15 +300,15 @@ public class Ship extends JPanel {
 	/**
 	 * @return Blast X location.
 	 */
-	public int getBlastxLocation() {
-		return this.blastxLocation;
+	public int[] getBlastxLocations() {
+		return this.blastxLocations;
 	}
 	
 	/**
 	 * @return Blast Y location.
 	 */
-	public int getBlastyLocation() {
-		return this.blastyLocation;
+	public int[] getBlastyLocations() {
+		return this.blastyLocations;
 	}
 	
 	/**

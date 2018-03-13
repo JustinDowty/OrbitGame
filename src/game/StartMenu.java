@@ -94,6 +94,7 @@ public class StartMenu extends JFrame implements ActionListener {
 		this.setVisible(true);
 		this.setFocusable(true);
 		this.setLocationRelativeTo(null);
+		enterInitialsDialog();
 	}
 	
 	/**
@@ -178,7 +179,6 @@ public class StartMenu extends JFrame implements ActionListener {
 	public void actionPerformed(final ActionEvent e) {
 		if (e.getSource() == start) {
 			this.dispose();
-			enterInitialsDialog();
 			MainGUI gui = new MainGUI(currPlayer);
 			gui.beginGame();
 		}

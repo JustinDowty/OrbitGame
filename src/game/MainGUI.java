@@ -138,6 +138,7 @@ public class MainGUI extends JFrame {
 		        	}
 		        }
 		        addToScores();
+		        addToStats();
 		        lostDialog();
 			}			
 		};
@@ -171,7 +172,7 @@ public class MainGUI extends JFrame {
 	}
 	
 	/**
-	 * Adds current score to High Scores.
+	 * Adds current score to High Scores, High Scores saves user score.
 	 */
 	public void addToScores(){
 		File file = new File("HighScores.txt");
@@ -179,8 +180,7 @@ public class MainGUI extends JFrame {
 			try {
 				BufferedWriter bw = new BufferedWriter(new FileWriter("HighScores.txt"));
 				bw.write(currPlayer + " " + scorePanel.getCurrentScore()[0] 
-						+ " " + scorePanel.getCurrentScore()[1] 
-						+ " " + scorePanel.getCurrentScore()[2] + "\r\n");
+						+ "\r\n");
 				bw.close();
 			} catch (IOException ex) {
 				ex.printStackTrace();
@@ -196,17 +196,17 @@ public class MainGUI extends JFrame {
 				while (currLine < 5){
 					line = br.readLine();
 					if (line == null) {
-						bw.write(currPlayer + " " + scorePanel.getCurrentScore()[0] 
-								+ " " + scorePanel.getCurrentScore()[1] 
-								+ " " + scorePanel.getCurrentScore()[2] + "\r\n");	
+						if (!hasWritten) {
+							bw.write(currPlayer + " " 
+									+ scorePanel.getCurrentScore()[0] + "\r\n");
+						}	
 						break;
 					}
 					String[] splitLine = line.split(" ");
 					if (!hasWritten && Integer.parseInt(splitLine[1])
 							<= scorePanel.getCurrentScore()[0]) {
 						bw.write(currPlayer + " " + scorePanel.getCurrentScore()[0] 
-								+ " " + scorePanel.getCurrentScore()[1] 
-								+ " " + scorePanel.getCurrentScore()[2] + "\r\n");	
+								+ "\r\n");	
 						hasWritten = true;
 					}
 					if (currLine < 4 || !hasWritten) {
@@ -220,6 +220,68 @@ public class MainGUI extends JFrame {
 				oldFile.delete();
 				File tempFile = new File("Temp.txt");
 				File newFile = new File("HighScores.txt");
+				tempFile.renameTo(newFile);
+			}
+			catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Adds to current stats, Stats saves user totalScore totalMeteors totalAliens.
+	 */
+	public void addToStats(){
+		File file = new File("Stats.txt");
+		if (!file.exists()) {
+			try {
+				BufferedWriter bw = new BufferedWriter(new FileWriter("Stats.txt"));
+				bw.write(currPlayer + " " + scorePanel.getCurrentScore()[0] 
+						+ " " + scorePanel.getCurrentScore()[1] 
+						+ " " + scorePanel.getCurrentScore()[2] + "\r\n");
+				bw.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+		else {
+			try{
+				String line = null;
+				Boolean found = false;
+				Boolean skip = false;
+				BufferedWriter bw = new BufferedWriter(new FileWriter("Temp2.txt"));
+				BufferedReader br = new BufferedReader(new FileReader("Stats.txt"));
+				while ((line = br.readLine()) != null) {					
+					String[] splitLine = line.split(" ");
+					if (currPlayer.equals(splitLine[0])) {
+						int newTotalScore = scorePanel.getCurrentScore()[0] +
+								Integer.parseInt(splitLine[1]);
+						int newTotalMeteors = scorePanel.getCurrentScore()[1] +
+								Integer.parseInt(splitLine[2]);
+						int newTotalAliens = scorePanel.getCurrentScore()[2] +
+								Integer.parseInt(splitLine[3]);
+						bw.write(currPlayer + " " + newTotalScore 
+								+ " " + newTotalMeteors 
+								+ " " + newTotalAliens + "\r\n");	
+						found = true;
+						skip = true;
+					}
+					if (!skip) {
+						bw.write(line + "\r\n");
+					}
+					skip = false;
+				}
+				if (!found) {
+					bw.write(currPlayer + " " + scorePanel.getCurrentScore()[0] 
+							+ " " + scorePanel.getCurrentScore()[1] 
+							+ " " + scorePanel.getCurrentScore()[2] + "\r\n");	
+				}
+				bw.close();
+				br.close();
+				File oldFile = new File("Stats.txt");
+				oldFile.delete();
+				File tempFile = new File("Temp2.txt");
+				File newFile = new File("Stats.txt");
 				tempFile.renameTo(newFile);
 			}
 			catch (Exception ex) {
