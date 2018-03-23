@@ -78,15 +78,19 @@ public class Alien extends JPanel {
 	 */
 	private int windowHeight;
 	/**
-	 * Margin from edge of panel to edge of frame.
+	 * Margin from edge of frame to edge of game.
 	 */
 	private int margin; 
 	
 	/**
 	 * Constructor sets ImageIcon i, sets health to full, and resets alien
 	 * via setSize() and reset() functions.
+	 * @param windowWidth The window width for the game.
+	 * @param windowHeight The window height for the game.
+	 * @param margin The window margin to left of game.
 	 */
-	public Alien(int windowWidth, int windowHeight, int margin) {
+	public Alien(final int windowWidth, 
+			final int windowHeight, final int margin) {
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
 		this.margin = margin;
@@ -259,7 +263,7 @@ public class Alien extends JPanel {
 	/**
 	 * @return Alien's health.
 	 */
-	public int getHealth(){
+	public int getHealth() {
 		return this.health;
 	}
 	
@@ -273,7 +277,7 @@ public class Alien extends JPanel {
 	/**
 	 * Resets alien's health to 2 when killed.
 	 */
-	public void resetHealth(){
+	public void resetHealth() {
 		this.health = 2;
 	}
 }

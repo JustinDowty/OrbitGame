@@ -38,9 +38,10 @@ public class Planet {
 	private int driftSpeed;
 	
 	/**
-	 * Constructor sets speed and initial location. 
+	 * Constructor sets speed and initial location.
+	 * @param windowHeight Current height of window. 
 	 */
-	public Planet(int windowHeight) {
+	public Planet(final int windowHeight) {
 		this.driftSpeed = 1;
 		this.xLocation = -300;
 		this.yLocation = windowHeight - 400;

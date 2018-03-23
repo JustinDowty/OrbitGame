@@ -47,13 +47,14 @@ public class ScorePanel extends JPanel {
 	private JLabel score 
 		= new JLabel("0", SwingConstants.CENTER);
 	/**
-	 * Current player score;
+	 * Current player score.
 	 */
 	private int currScore = 0;
 	/**
 	 * Initializes score panel with labels.
+	 * @param windowHeight Current height of window.
 	 */
-	public ScorePanel(int windowHeight) {		
+	public ScorePanel(final int windowHeight) {		
 		this.setPreferredSize(new Dimension(295, 
 				windowHeight));
 		this.setBackground(Color.CYAN);
@@ -143,6 +144,14 @@ public class ScorePanel extends JPanel {
 	}
 	
 	/**
+	 * Increments aliens killed 5 for boss, updates text field.
+	 */
+	public void incrementBossKilled() {
+		aliensKilled += 5;
+		aliens.setText("" + aliensKilled);
+	}
+	
+	/**
 	 * Resets aliens killed to 0, updates text field.
 	 */
 	public void resetAliensKilled() {
@@ -174,10 +183,10 @@ public class ScorePanel extends JPanel {
 	}
 	
 	/**
-	 * Array is [currScore, meteorsDodged, aliensKilled]
+	 * Array is [currScore, meteorsDodged, aliensKilled].
 	 * @return Current score in an array.
 	 */
-	public int[] getCurrentScore(){
+	public int[] getCurrentScore() {
 		return new int[] {currScore, meteorsDodged, aliensKilled};
 	}
 

@@ -39,6 +39,14 @@ public class Ship extends JPanel {
 	 */
 	private BlastTypes blastType;
 	/**
+	 * Width of blast.
+	 */
+	private int blastWidth;
+	/**
+	 * Height of blast.
+	 */
+	private int blastHeight;
+	/**
 	 * Whether or not ship can fire.
 	 */
 	private boolean canFire = true;
@@ -67,6 +75,10 @@ public class Ship extends JPanel {
 	 */
 	private boolean healing;
 	/**
+	 * Whether ship is invincible.
+	 */
+	private boolean invincible = false;
+	/**
 	 * Ship's ImageIcon.
 	 */
 	private ImageIcon i;
@@ -86,18 +98,31 @@ public class Ship extends JPanel {
 	/**
 	 * Constructor sets health to full, healing to false, and 
 	 * resets location.
+	 * @param windowWidth The window width for the game.
+	 * @param windowHeight The window height for the game.
+	 * @param margin The window margin to left of game.
+	 * @param blastType Current blast type.
 	 */
-	public Ship(int windowWidth, int windowHeight, int margin, BlastTypes blastType) {
+	public Ship(final int windowWidth, final int windowHeight, 
+			final int margin, final BlastTypes blastType) {
 		this.blastType = blastType;
-		if (blastType == BlastTypes.STANDARD) {
+		if (blastType == BlastTypes.STANDARD
+				|| blastType == BlastTypes.LAZER) {
 			blastxLocations = new int[1];
 			blastyLocations = new int[1];
 			blastsFiring = new boolean[1];
+			blastWidth = 20;
+			blastHeight = 45;
+			if (blastType == BlastTypes.LAZER) {
+				blastHeight = 400;
+			}
 		} else if (blastType == BlastTypes.MULTI_BLAST
 				|| blastType == BlastTypes.SIDE_BLASTS) {
 			blastxLocations = new int[3];
 			blastyLocations = new int[3];
 			blastsFiring = new boolean[3];
+			blastWidth = 20;
+			blastHeight = 45;
 		}
 		for (int i = 0; i < blastsFiring.length; i++) {
 			blastsFiring[i] = false;
@@ -105,7 +130,7 @@ public class Ship extends JPanel {
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
 		this.margin = margin;
-		this.health = 5;
+		this.health = 10;
 		this.healing = false;
 		setLocation();
 	}
@@ -126,10 +151,12 @@ public class Ship extends JPanel {
 	 * @param g Instance of Graphics.
 	 */
 	public void paintComponent(final Graphics g) {
+		i = new ImageIcon("ship.png");
 		if (this.healing && this.health > 0) {
 			i = new ImageIcon("shiptransparent.png");
-		} else {
-			i = new ImageIcon("ship.png");
+		}
+		if (this.invincible) {
+			i = new ImageIcon("shipinvincible.png");
 		}
 		if (this.blastType == BlastTypes.STANDARD) {
 			g.setColor(Color.YELLOW);
@@ -137,32 +164,21 @@ public class Ship extends JPanel {
 			g.setColor(Color.PINK);
 		} else if (this.blastType == BlastTypes.MULTI_BLAST) {
 			g.setColor(Color.MAGENTA);
-		}		
+		} else if (this.blastType == BlastTypes.LAZER) {
+			g.setColor(Color.RED);
+		}
 		for (int i = 0; i < blastxLocations.length; i++) {
-			g.fillRect(blastxLocations[i], blastyLocations[i], width / 2, height);
+			g.fillOval(blastxLocations[i], blastyLocations[i], blastWidth, blastHeight);
 		}
 		i.paintIcon(this, g, xLocation, yLocation);
-		g.setColor(Color.GREEN);
+		g.setColor(Color.RED);
 		g.fillRect(this.xLocation + this.width + 20, 
 				this.yLocation + 5, 5, 50);
-		g.setColor(Color.RED);
-		if (this.health == 4) {
-			g.fillRect(this.xLocation + this.width + 20, 
-					this.yLocation + 5, 5, 10);
-		} else if (this.health == 3) {
-			g.fillRect(this.xLocation + this.width + 20, 
-					this.yLocation + 5, 5, 20);
-		} else if (this.health == 2) {
-			g.fillRect(this.xLocation + this.width + 20, 
-					this.yLocation + 5, 5, 30);
-		} else if (this.health == 1) {
-			g.fillRect(this.xLocation + this.width + 20, 
-					this.yLocation + 5, 5, 40);
-		}
-		if (this.health == 0) {
-			g.fillRect(this.xLocation + this.width + 20, 
-					this.yLocation + 5, 5, 50);
-		}
+		g.setColor(Color.GREEN);
+		g.fillRect(this.xLocation + this.width + 20, 
+				//10 - health * 5 is to move bar down incrementally
+				this.yLocation + 5 + (10 - this.health) * 5, 5, 
+				this.health * 5);
 	}
 	
 	/**
@@ -223,12 +239,12 @@ public class Ship extends JPanel {
 	 */
 	public void updateBlast() {
 		boolean allFired = true;
-		for (int i = 0; i < blastxLocations.length; i++){
+		for (int i = 0; i < blastxLocations.length; i++) {
 			if (this.firing && this.blastyLocations[i] > -20 
-					&& blastsFiring[i] == true) {
+					&& blastsFiring[i]) {
 				allFired = false;
 				if (blastType == BlastTypes.SIDE_BLASTS 
-						&& i == 0){ //IGNORE MIDDLE BLAST
+						&& i == 0) { //IGNORE MIDDLE BLAST
 					blastsFiring[i] = false;
 				} else {
 					this.blastyLocations[i] -= 10;
@@ -240,16 +256,16 @@ public class Ship extends JPanel {
 				}
 			} else {
 				blastsFiring[i] = false;
-				// puts blast off screen !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				// puts blast off screen
 				this.blastyLocations[i] = windowHeight + 100;
 			}
 		}
 		if (allFired) {
-			this.firing = false; // done with blast path
+			this.firing = false; // done with firing
 			this.canFire = true; // can fire now
 			for (int j = 0; j < blastsFiring.length; j++) {
 				blastsFiring[j] = false;
-				// puts blast off screen !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				// puts blast off screen
 				this.blastyLocations[j] = windowHeight + 100;
 			}
 		}
@@ -269,9 +285,15 @@ public class Ship extends JPanel {
 	
 	/**
 	 * Cancels blast by setting firing to false.
+	 * @param isBoss Determines if hit is to a boss.
+	 * @param b Index of blast to be cancelled.
 	 */
-	public void cancelBlast(int b) {
+	public void cancelBlast(final int b, final boolean isBoss) {
 		blastsFiring[b] = false;
+		// LAZER does not get canceled until end
+		if (blastType == BlastTypes.LAZER && !isBoss) {
+			blastsFiring[b] = true;
+		}
 		boolean allFired = true;
 		for (int i = 0; i < blastsFiring.length; i++) {
 			if (blastsFiring[i]) {
@@ -326,6 +348,27 @@ public class Ship extends JPanel {
 	}
 	
 	/**
+	 * @return Blasts width.
+	 */
+	public int getBlastWidth() {
+		return this.blastWidth;
+	}
+	
+	/**
+	 * @return Blasts height.
+	 */
+	public int getBlastHeight() {
+		return this.blastHeight;
+	}
+	
+	/**
+	 * @return Blast type.
+	 */
+	public BlastTypes getBlastType() {
+		return this.blastType;
+	}
+	
+	/**
 	 * @return Whether or not ship is firing.
 	 */
 	public boolean isFiring() {
@@ -345,5 +388,20 @@ public class Ship extends JPanel {
 	 */
 	public void setHealing(final boolean healing) {
 		this.healing = healing;
+	}
+	
+	/**
+	 * Sets ship's invincible status.
+	 * @param invincible Whether or not ship is invincible.
+	 */
+	public void setInvincible(final boolean invincible) {
+		this.invincible = invincible;
+	}
+	
+	/**
+	 * @return Ship's invincibility status.
+	 */
+	public boolean isInvincible() {
+		return this.invincible;
 	}
 }

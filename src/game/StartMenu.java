@@ -216,12 +216,21 @@ public class StartMenu extends JFrame implements ActionListener {
 		}
 	}
 	
+	/**
+	 * Initiates dialog to prompt user for initials.
+	 */
 	public void enterInitialsDialog() {
 		currPlayer = JOptionPane.showInputDialog("Enter your initials");
-		while (currPlayer.length() != 3|| currPlayer.charAt(0) == ' '
+		if (currPlayer == null) {
+			System.exit(0);
+		}
+		while (currPlayer.length() != 3 || currPlayer.charAt(0) == ' '
 				|| currPlayer.charAt(1) == ' ' || currPlayer.charAt(2) == ' ') {
 			JOptionPane.showMessageDialog(this, "Enter your initials in three digits!");
 			currPlayer = JOptionPane.showInputDialog("Enter your initials");
+			if (currPlayer == null) {
+				System.exit(0);
+			}
 		}
 	}
 

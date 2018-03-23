@@ -1,11 +1,11 @@
 package game;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Random;
-
 import javax.swing.JPanel;
 
 /**
@@ -73,12 +73,43 @@ public class OrbitGame extends JPanel {
 	 * Image instance used for double buffering.
 	 */
 	private Image dbImage;
-	
+	/**
+	 * Whether or not player is currently fighting a boss.
+	 */
+	private boolean fightingBoss = false;
+	/**
+	 * The current boss.
+	 */
+	private Boss boss;
+	/**
+	 * The boss number the player is currently on.
+	 */
+	private int bossCount = 0;
+	/**
+	 * The last time a boss was defeated.
+	 */
+	private int bossLastDefeated = 0;
+	/**
+	 * Toggles incoming enemy warning on and off.
+	 */
+	private boolean bossMsg = false;
+	/**
+	 * Current power up object.
+	 */
+	private PowerUp powerUp;
+	/**
+	 * Time that power up was activated.
+	 */
+	private int powerTime = 0;
 	/**
 	 * Constructor resets game, generates stars for background,
 	 * and sets size and background of panel.
+	 * @param windowWidth The window width for the game.
+	 * @param windowHeight The window height for the game.
+	 * @param margin The window margin to left of game.
 	 */
-	public OrbitGame(int windowWidth, int windowHeight, int margin) {
+	public OrbitGame(final int windowWidth, 
+			final int windowHeight, final int margin) {
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
 		this.margin = margin;
@@ -93,12 +124,14 @@ public class OrbitGame extends JPanel {
 	 */
 	public void reset() {
 		planet = new Planet(windowHeight);
-		ship = new Ship(windowWidth, windowHeight, margin, BlastTypes.MULTI_BLAST); // UPDATES SHIPS BLAST PARAMETER
+		ship = new Ship(windowWidth, windowHeight, margin, BlastTypes.LAZER);
 		meteorArray = new ArrayList<Meteor>();
 		alienArray = new ArrayList<Alien>();
 		playing = true;
-		// Adds one meteor to start game off
-		meteorArray.add(new Meteor(windowWidth, windowHeight, margin));
+		fightingBoss = false;
+		boss = null;
+		bossCount = 0;
+		bossLastDefeated = 0;
 		currentKey = 'S';
 	}
 	
@@ -119,6 +152,12 @@ public class OrbitGame extends JPanel {
 	 */
 	public void paintComponent(final Graphics g) {
 		super.paintComponent(g);	
+		g.setColor(Color.LIGHT_GRAY);
+		Font font = new Font("Impact", Font.BOLD, 40);
+		g.setFont(font);
+		if (bossMsg) {
+			g.drawString("INCOMING ENEMY", 600, 200);
+		}
 		g.setColor(Color.DARK_GRAY);
 		for (int i = 0; i < starLocations.length; i += 4) {
 			g.fillOval(starLocations[i], 
@@ -133,6 +172,12 @@ public class OrbitGame extends JPanel {
 		for (Meteor meteor : meteorArray) {
 			meteor.paintComponent(g);
 		}
+		if (boss != null) {
+			boss.paintComponent(g);
+		}
+		if (powerUp != null) {
+			powerUp.paintComponent(g);
+		}
 		ship.paintComponent(g);
 		// Drawing small tick showing ship bounds next to planet
 		g.setColor(Color.LIGHT_GRAY);
@@ -144,15 +189,56 @@ public class OrbitGame extends JPanel {
 	 * appropriate times. Checks for game interactions via currentKey
 	 * and checks for objects interacting.
 	 * @param currTime Current time in game.
+	 * @param scorePanel Scorepanel to be updated.
 	 */
-	public void update(final int currTime, ScorePanel scorePanel) {
+	public void update(final int currTime, final ScorePanel scorePanel) {
 		// Adds a new meteor to game until enough are in game,
-		// those 20 get recycled
-		if (currTime % 500 == 0 && meteorArray.size() < 6) {
+		// those get recycled unless in boss fight
+		if (currTime % 500 == 0 && meteorArray.size() < 6 && !fightingBoss) {
 			//meteorArray.add(new Meteor(windowWidth, windowHeight, margin));
 		}
-		if (currTime % 50 == 0 && alienArray.size() < 2) {
-			alienArray.add(new Alien(windowWidth, windowHeight, margin));
+		if (currTime % 50 == 0 && alienArray.size() < 2 && !fightingBoss) {
+			//alienArray.add(new Alien(windowWidth, windowHeight, margin));
+		}
+		if (currTime - bossLastDefeated > 10000 && !fightingBoss) {
+			if (currTime % 1000 == 0) {
+				bossMsg = !bossMsg;
+			}
+		}
+		if (currTime - bossLastDefeated > 15000 && !fightingBoss) {
+			bossMsg = false;
+			fightingBoss = true;
+			// clears all meteors but 2
+			meteorArray.subList(2, meteorArray.size()).clear();
+			boss = new Boss(windowWidth, windowHeight, 
+					margin, bossCount);
+		}
+		if (fightingBoss) {
+			boss.update(currTime);
+			checkIfBlastHit(boss);
+			if (checkIfShipHit(boss)) {
+				ship.setHealing(true);
+				hitTime = currTime;
+			}
+			if (boss.getHealth() < 1) {
+				boss = null;
+				fightingBoss = false;
+				bossCount++;
+				bossLastDefeated = currTime;
+				scorePanel.incrementBossKilled();
+			}
+		}
+		if (currTime % 20000 == 0) {
+			powerUp = new PowerUp(windowWidth, windowHeight, margin);
+		}
+		if (powerUp != null) {
+			if (checkPowerUp(powerUp)) {
+				ship.setInvincible(true);
+				powerTime = currTime;
+				powerUp = null;
+			} else if (!powerUp.update()) {
+				powerUp = null;
+			}
 		}
 		for (Meteor meteor : meteorArray) {
 			meteor.update();
@@ -183,6 +269,9 @@ public class OrbitGame extends JPanel {
 		}
 		if (currTime - hitTime > 1000 && ship.isHealing()) {
 			ship.setHealing(false);
+		}
+		if (currTime - powerTime > 4000 && ship.isInvincible()) {
+			ship.setInvincible(false);
 		}
 		if (currentKey == 'L') {
 			ship.moveLeft();
@@ -224,7 +313,7 @@ public class OrbitGame extends JPanel {
 				&& shipXcoordRight > meteorXcoordLeft) 
 				&& (shipYcoordTop < meteorYcoordBottom 
 					&& shipYcoordBottom > meteorYcoordTop)
-				&& !ship.isHealing()) {
+				&& !ship.isHealing() && !ship.isInvincible()) {
 			if (ship.decreaseHealth() == 0) {
 				playing = false;
 			}
@@ -258,22 +347,54 @@ public class OrbitGame extends JPanel {
 				&& shipXcoordRight > alienXcoordLeft) 
 				&& (shipYcoordTop < alienYcoordBottom 
 					&& shipYcoordBottom > alienYcoordTop)
-				&& !ship.isHealing()) {
+				&& !ship.isHealing() && !ship.isInvincible()) {
 			if (ship.decreaseHealth() == 0) {
 				playing = false;
 			}
 			return true;
 		}
-		
 		if ((shipXcoordLeft < blastXcoordRight 
 				&& shipXcoordRight > blastXcoordLeft) 
 				&& (shipYcoordTop < blastYcoordBottom 
 					&& shipYcoordBottom > blastYcoordTop)
-				&& !ship.isHealing()) {
+				&& !ship.isHealing() && !ship.isInvincible()) {
 			if (ship.decreaseHealth() == 0) {
 				playing = false;
 			}
 			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Calculates if ship is hit, calls methods to update game accordingly.
+	 * @return Whether or not ship has been hit.
+	 * @param boss Boss to be checked.
+	 */
+	public boolean checkIfShipHit(final Boss boss) {
+		for (int i = 0; i < boss.getBlastxLocations().length; i++) {
+			int shipXcoordLeft = ship.getxLocation() + 5;
+			int shipXcoordRight = ship.getxLocation() + ship.getWidth() - 5;
+			int blastXcoordLeft = boss.getBlastxLocations()[i];
+			int blastXcoordRight = boss.getBlastxLocations()[i] 
+					+ boss.getBlastSize();
+			
+			int shipYcoordTop = ship.getyLocation() - 5;
+			int shipYcoordBottom = ship.getyLocation() + ship.getHeight();
+			int blastYcoordTop = boss.getBlastyLocations()[i];
+			int blastYcoordBottom = boss.getBlastyLocations()[i] 
+					+ boss.getBlastSize();
+			
+			if ((shipXcoordLeft < blastXcoordRight 
+					&& shipXcoordRight > blastXcoordLeft) 
+					&& (shipYcoordTop < blastYcoordBottom 
+						&& shipYcoordBottom > blastYcoordTop)
+					&& !ship.isHealing() && !ship.isInvincible()) {
+				if (ship.decreaseHealth() == 0) {
+					playing = false;
+				}
+				return true;
+			}
 		}
 		return false;
 	}
@@ -286,14 +407,14 @@ public class OrbitGame extends JPanel {
 		for (int i = 0; i < ship.getBlastxLocations().length; i++) {
 			int blastXcoordLeft = ship.getBlastxLocations()[i];
 			int blastXcoordRight = ship.getBlastxLocations()[i] 
-					+ ship.getWidth() / 2;
+					+ ship.getBlastWidth();
 			int meteorXcoordLeft = meteor.getxLocation();
 			int meteorXcoordRight = meteor.getxLocation() 
 					+ meteor.getWidth();
 			
 			int blastYcoordTop = ship.getBlastyLocations()[i];
 			int blastYcoordBottom = ship.getBlastyLocations()[i] 
-					+ ship.getHeight() / 2;
+					+ ship.getBlastHeight();
 			int meteorYcoordTop = meteor.getyLocation();
 			int meteorYcoordBottom = meteor.getyLocation() 
 					+ meteor.getWidth();
@@ -304,7 +425,7 @@ public class OrbitGame extends JPanel {
 						&& blastYcoordBottom 
 						> meteorYcoordTop)) {
 				meteor.reset();
-				ship.cancelBlast(i);
+				ship.cancelBlast(i, false);
 				ScorePanel.setFireButtonColor(Color.RED);
 			}
 		}
@@ -318,13 +439,13 @@ public class OrbitGame extends JPanel {
 		for (int i = 0; i < ship.getBlastxLocations().length; i++) {
 			int blastXcoordLeft = ship.getBlastxLocations()[i];
 			int blastXcoordRight = ship.getBlastxLocations()[i] 
-					+ ship.getWidth() / 2;
+					+ ship.getBlastWidth();
 			int alienXcoordLeft = alien.getxLocation();
 			int alienXcoordRight = alien.getxLocation() + alien.getWidth();
 			
 			int blastYcoordTop = ship.getBlastyLocations()[i];
 			int blastYcoordBottom = ship.getBlastyLocations()[i] 
-					+ ship.getHeight() / 2;
+					+ ship.getBlastHeight();
 			int alienYcoordTop = alien.getyLocation();
 			int alienYcoordBottom = alien.getyLocation() + alien.getWidth();
 			
@@ -334,11 +455,73 @@ public class OrbitGame extends JPanel {
 							&& blastYcoordBottom 
 							> alienYcoordTop)
 					&& ship.isFiring()) {
-				ship.cancelBlast(i);
+				ship.cancelBlast(i, false);
 				ScorePanel.setFireButtonColor(Color.RED);
 				alien.decreaseHealth();
 			}
 		}
+	}
+	/**
+	 * Checks if blast hits a boss.
+	 * @param boss Boss being checked.
+	 */
+	public void checkIfBlastHit(final Boss boss) {
+		for (int i = 0; i < ship.getBlastxLocations().length; i++) {
+			int blastXcoordLeft = ship.getBlastxLocations()[i];
+			int blastXcoordRight = ship.getBlastxLocations()[i] 
+					+ ship.getBlastWidth();
+			int bossXcoordLeft = boss.getxLocation();
+			int bossXcoordRight = boss.getxLocation() + boss.getWidth();
+			
+			int blastYcoordTop = ship.getBlastyLocations()[i];
+			int blastYcoordBottom = ship.getBlastyLocations()[i] 
+					+ ship.getBlastHeight();
+			int alienYcoordTop = boss.getyLocation();
+			int alienYcoordBottom = boss.getyLocation() + boss.getHeight();
+			
+			if ((blastXcoordLeft < bossXcoordRight 
+					&& blastXcoordRight > bossXcoordLeft) 
+					&& (blastYcoordTop < alienYcoordBottom 
+							&& blastYcoordBottom 
+							> alienYcoordTop)
+					&& ship.isFiring()) {
+				ship.cancelBlast(i, true);
+				ScorePanel.setFireButtonColor(Color.RED);
+				// Decreases boss's health by 3 if lazer blast
+				if (ship.getBlastType() == BlastTypes.LAZER) {
+					for (int j = 0; j < 3; j++) {
+						boss.decreaseHealth();
+					}
+				} else {
+					boss.decreaseHealth();
+				}
+			}
+		}
+	}
+	/**
+	 * Checks if ship hits power up.
+	 * @param boss Boss being checked.
+	 * @return whether power up was hit.
+	 */
+	public boolean checkPowerUp(final PowerUp powerUp) {
+		int shipXcoordLeft = ship.getxLocation();
+		int shipXcoordRight = ship.getxLocation() + ship.getWidth();
+		int powerUpXcoordLeft = powerUp.getxLocation();
+		int powerUpXcoordRight = powerUp.getxLocation() + powerUp.getSize();
+		
+		int shipYcoordTop = ship.getyLocation();
+		int shipYcoordBottom = ship.getyLocation() + ship.getHeight();
+		int powerUpYcoordTop = powerUp.getyLocation();
+		int powerUpYcoordBottom = powerUp.getyLocation() 
+				+ powerUp.getSize();
+		
+		if ((shipXcoordLeft < powerUpXcoordRight 
+				&& shipXcoordRight > powerUpXcoordLeft) 
+				&& (shipYcoordTop < powerUpYcoordBottom 
+					&& shipYcoordBottom > powerUpYcoordTop)) {
+			return true;
+		}
+		return false;
 	}
 	
 	/**

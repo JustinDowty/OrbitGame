@@ -9,10 +9,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 /**
@@ -38,7 +36,7 @@ public class MainGUI extends JFrame {
 	 */
 	private final int windowHeight = 800;
 	/**
-	 * Margin from edge of panel to edge of frame.
+	 * Margin from edge of frame to edge of game.
 	 */
 	private final int margin = 400; 
 	/**
@@ -56,8 +54,9 @@ public class MainGUI extends JFrame {
 	/**
 	 * Constructor initializes new game and adds components to frame.
 	 * Takes entered initials in constructor.
+	 * @param currPlayer current player initials.
 	 */	
-	public MainGUI(String currPlayer) {
+	public MainGUI(final String currPlayer) {
 		this.currPlayer = currPlayer;
 		game = new OrbitGame(windowWidth, windowHeight, margin);     
         scorePanel = new ScorePanel(windowHeight);
@@ -174,7 +173,7 @@ public class MainGUI extends JFrame {
 	/**
 	 * Adds current score to High Scores, High Scores saves user score.
 	 */
-	public void addToScores(){
+	public void addToScores() {
 		File file = new File("HighScores.txt");
 		if (!file.exists()) {
 			try {
@@ -185,15 +184,14 @@ public class MainGUI extends JFrame {
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
-		}
-		else {
-			try{
+		} else {
+			try {
 				String line = null;
 				Boolean hasWritten = false;
 				BufferedWriter bw = new BufferedWriter(new FileWriter("Temp.txt"));
 				BufferedReader br = new BufferedReader(new FileReader("HighScores.txt"));
 				int currLine = 0;
-				while (currLine < 5){
+				while (currLine < 5) {
 					line = br.readLine();
 					if (line == null) {
 						if (!hasWritten) {
@@ -221,8 +219,7 @@ public class MainGUI extends JFrame {
 				File tempFile = new File("Temp.txt");
 				File newFile = new File("HighScores.txt");
 				tempFile.renameTo(newFile);
-			}
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		}
@@ -231,21 +228,22 @@ public class MainGUI extends JFrame {
 	/**
 	 * Adds to current stats, Stats saves user totalScore totalMeteors totalAliens.
 	 */
-	public void addToStats(){
+	public void addToStats() {
 		File file = new File("Stats.txt");
 		if (!file.exists()) {
 			try {
-				BufferedWriter bw = new BufferedWriter(new FileWriter("Stats.txt"));
-				bw.write(currPlayer + " " + scorePanel.getCurrentScore()[0] 
-						+ " " + scorePanel.getCurrentScore()[1] 
-						+ " " + scorePanel.getCurrentScore()[2] + "\r\n");
+				BufferedWriter bw 
+					= new BufferedWriter(new FileWriter("Stats.txt"));
+				bw.write(currPlayer + " " 
+					+ scorePanel.getCurrentScore()[0] 
+					+ " " + scorePanel.getCurrentScore()[1] 
+					+ " " + scorePanel.getCurrentScore()[2] + "\r\n");
 				bw.close();
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
-		}
-		else {
-			try{
+		} else {
+			try {
 				String line = null;
 				Boolean found = false;
 				Boolean skip = false;
@@ -254,12 +252,12 @@ public class MainGUI extends JFrame {
 				while ((line = br.readLine()) != null) {					
 					String[] splitLine = line.split(" ");
 					if (currPlayer.equals(splitLine[0])) {
-						int newTotalScore = scorePanel.getCurrentScore()[0] +
-								Integer.parseInt(splitLine[1]);
-						int newTotalMeteors = scorePanel.getCurrentScore()[1] +
-								Integer.parseInt(splitLine[2]);
-						int newTotalAliens = scorePanel.getCurrentScore()[2] +
-								Integer.parseInt(splitLine[3]);
+						int newTotalScore = scorePanel.getCurrentScore()[0] 
+								+ Integer.parseInt(splitLine[1]);
+						int newTotalMeteors = scorePanel.getCurrentScore()[1]
+								+ Integer.parseInt(splitLine[2]);
+						int newTotalAliens = scorePanel.getCurrentScore()[2]
+								+ Integer.parseInt(splitLine[3]);
 						bw.write(currPlayer + " " + newTotalScore 
 								+ " " + newTotalMeteors 
 								+ " " + newTotalAliens + "\r\n");	
@@ -283,8 +281,7 @@ public class MainGUI extends JFrame {
 				File tempFile = new File("Temp2.txt");
 				File newFile = new File("Stats.txt");
 				tempFile.renameTo(newFile);
-			}
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		}

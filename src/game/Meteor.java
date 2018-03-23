@@ -63,8 +63,11 @@ public class Meteor extends JPanel {
 	
 	/**
 	 * Constructor initalizes meteor. Sets random image and resets.
+	 * @param windowWidth The window width for the game.
+	 * @param windowHeight The window height for the game.
+	 * @param margin The window margin to left of game.
 	 */
-	public Meteor(int windowWidth, int windowHeight, int margin) {
+	public Meteor(final int windowWidth, final int windowHeight, final int margin) {
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
 		this.margin = margin;

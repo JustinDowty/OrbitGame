@@ -1,5 +1,5 @@
-asd 112 28 4
-iii 96 24 4
-nwe 90 30 3
-AAJ 80 20 4
-iii 65 13 5
+asd 7515
+asd 5643
+asd 4080
+asd 3416
+asd 3390
