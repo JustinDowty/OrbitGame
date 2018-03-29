@@ -4,8 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.Random;
-
 import javax.swing.ImageIcon;
+import javax.swing.JPanel;
 
 /**
  * Boss class holds all infromation for bosses position,
@@ -13,7 +13,8 @@ import javax.swing.ImageIcon;
  * @author Justin Dowty
  *
  */
-public class Boss {
+public class Boss extends JPanel {
+	private static final long serialVersionUID = 1L;
 	/**
 	 * Boss's current health.
 	 */
@@ -92,6 +93,7 @@ public class Boss {
 	 */
 	public Boss(final int windowWidth, final int windowHeight, 
 			final int margin, final int bossCount) {
+		i = new ImageIcon("boss.png");
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
 		this.margin = margin;
@@ -109,11 +111,11 @@ public class Boss {
 				- this.getWidth() / 2 + margin);
 		this.yLocation = 40;
 		// Sets blast locations within boss
-		blastxLocations[0] = xLocation + 40;
+		blastxLocations[0] = xLocation + 80;
 		blastxLocations[1] = xLocation + getWidth() / 2
 				- blastSize / 2;
 		blastxLocations[2] = xLocation + getWidth()
-				- blastSize - 40;
+				- blastSize - 80;
 		for (int i = 0; i < 3; i++) {
 			blastyLocations[i] = yLocation + getHeight()
 				- blastSize - 20;
@@ -129,9 +131,7 @@ public class Boss {
 			g.fillRect(blastxLocations[i], blastyLocations[i], 
 					blastSize, blastSize);
 		}
-		g.setColor(Color.GRAY);
-		g.fillRect(xLocation, yLocation,
-				this.getWidth(), this.getHeight());
+		i.paintIcon(this, g, xLocation, yLocation);
 	}
 	/**
 	 * Updates the boss's positions based on current game time.
@@ -146,15 +146,18 @@ public class Boss {
 			for (int i = 0; i < 3; i++) {
 				blastyLocations[i] += blastSpeed;
 			}
+			// Moves outer blasts outward
+			blastxLocations[0] -= blastSpeed / 4;
+			blastxLocations[2] += blastSpeed / 4;
 		}
 		// Resets blasts
 		if (blastyLocations[0] > windowHeight + blastSize) {
 			// Sets blast locations within boss
-			blastxLocations[0] = xLocation + 40;
+			blastxLocations[0] = xLocation + 80;
 			blastxLocations[1] = xLocation + getWidth() / 2
 					- blastSize / 2;
 			blastxLocations[2] = xLocation + getWidth()
-					- blastSize - 40;
+					- blastSize - 80;
 			for (int i = 0; i < 3; i++) {
 				blastyLocations[i] = yLocation + getHeight()
 					- blastSize - 20;

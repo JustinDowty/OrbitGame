@@ -107,24 +107,27 @@ public class OrbitGame extends JPanel {
 	 * @param windowWidth The window width for the game.
 	 * @param windowHeight The window height for the game.
 	 * @param margin The window margin to left of game.
+	 * @param blastType The players current blast type.
 	 */
 	public OrbitGame(final int windowWidth, 
-			final int windowHeight, final int margin) {
+			final int windowHeight, final int margin,
+			final BlastTypes blastType) {
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
 		this.margin = margin;
-		reset();
-		generateStars();
+		reset(blastType);
+		starLocations = Utils.generateStars(4, windowWidth, windowHeight);
 		this.setSize(windowWidth, windowHeight);
 		this.setBackground(Color.BLACK);
 	}
 	
 	/**
 	 * Initializes game components and resets score panel.
+	 * @param blastType The players current blastType.
 	 */
-	public void reset() {
+	public void reset(final BlastTypes blastType) {
 		planet = new Planet(windowHeight);
-		ship = new Ship(windowWidth, windowHeight, margin, BlastTypes.LAZER);
+		ship = new Ship(windowWidth, windowHeight, margin, blastType);
 		meteorArray = new ArrayList<Meteor>();
 		alienArray = new ArrayList<Alien>();
 		playing = true;
@@ -152,18 +155,18 @@ public class OrbitGame extends JPanel {
 	 */
 	public void paintComponent(final Graphics g) {
 		super.paintComponent(g);	
-		g.setColor(Color.LIGHT_GRAY);
-		Font font = new Font("Impact", Font.BOLD, 40);
-		g.setFont(font);
-		if (bossMsg) {
-			g.drawString("INCOMING ENEMY", 600, 200);
-		}
 		g.setColor(Color.DARK_GRAY);
 		for (int i = 0; i < starLocations.length; i += 4) {
 			g.fillOval(starLocations[i], 
 					starLocations[i + 1], 
 					starLocations[i + 2], 
 					starLocations[i + 3]);
+		}
+		g.setColor(Color.LIGHT_GRAY);
+		Font font = new Font("Impact", Font.BOLD, 40);
+		g.setFont(font);
+		if (bossMsg) {
+			g.drawString("INCOMING ENEMY", 600, 200);
 		}
 		planet.paintComponent(g);
 		for (Alien alien : alienArray) {
@@ -195,10 +198,10 @@ public class OrbitGame extends JPanel {
 		// Adds a new meteor to game until enough are in game,
 		// those get recycled unless in boss fight
 		if (currTime % 500 == 0 && meteorArray.size() < 6 && !fightingBoss) {
-			//meteorArray.add(new Meteor(windowWidth, windowHeight, margin));
+			meteorArray.add(new Meteor(windowWidth, windowHeight, margin));
 		}
 		if (currTime % 50 == 0 && alienArray.size() < 2 && !fightingBoss) {
-			//alienArray.add(new Alien(windowWidth, windowHeight, margin));
+			alienArray.add(new Alien(windowWidth, windowHeight, margin));
 		}
 		if (currTime - bossLastDefeated > 10000 && !fightingBoss) {
 			if (currTime % 1000 == 0) {
@@ -209,6 +212,7 @@ public class OrbitGame extends JPanel {
 			bossMsg = false;
 			fightingBoss = true;
 			// clears all meteors but 2
+			alienArray.subList(1, alienArray.size()).clear();
 			meteorArray.subList(2, meteorArray.size()).clear();
 			boss = new Boss(windowWidth, windowHeight, 
 					margin, bossCount);
@@ -288,7 +292,7 @@ public class OrbitGame extends JPanel {
 		ship.updateBlast();
 		changeFireButtonColor();
 		planet.drift(currTime);
-		moveStars();
+		Utils.moveStars(starLocations, windowWidth, windowHeight);
 	}
 	
 	/**
@@ -500,7 +504,7 @@ public class OrbitGame extends JPanel {
 	}
 	/**
 	 * Checks if ship hits power up.
-	 * @param boss Boss being checked.
+	 * @param powerUp Power up to be checked.
 	 * @return whether power up was hit.
 	 */
 	public boolean checkPowerUp(final PowerUp powerUp) {
@@ -564,34 +568,6 @@ public class OrbitGame extends JPanel {
 			ScorePanel.setFireButtonColor(Color.LIGHT_GRAY);
 		} else {
 			ScorePanel.setFireButtonColor(Color.RED);
-		}
-	}
-	
-	/**
-	 * Generates background stars at random.
-	 */
-	public void generateStars() {
-		starLocations = new int[240];
-		for (int i = 0; i < 240; i += 4) {
-			int size = rand.nextInt(20) + 10;
-			starLocations[i] = rand.nextInt(1100);
-			starLocations[i + 1] = rand.nextInt(800);
-			starLocations[i + 2] = size / 2;
-			starLocations[i + 3] = size;
-		}
-	}
-	
-	/**
-	 * Moves stars down background.
-	 */
-	public void moveStars() {
-		for (int i = 0; i < starLocations.length; i += 4) {
-			if (starLocations[i + 1] > 805) {
-				starLocations[i] = rand.nextInt(1100);
-				starLocations[i + 1] = -5;
-			} else {
-				starLocations[i + 1] += 2;
-			}
 		}
 	}
 }

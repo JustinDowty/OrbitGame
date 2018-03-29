@@ -4,6 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Random;
 
+/**
+ * This class builds the power up object.
+ * @author JustinDowty
+ *
+ */
 public class PowerUp {
 	/**
 	 * Falling speed of power up.
@@ -40,8 +45,12 @@ public class PowerUp {
 	
 	/**
 	 * Builds the power up object and initializes its position.
+	 * @param windowWidth Width of window.
+	 * @param windowHeight Height of window.
+	 * @param margin Margin from edge of window to game.
 	 */
-	public PowerUp(final int windowWidth, final int windowHeight, final int margin) {
+	public PowerUp(final int windowWidth, final int windowHeight, 
+			final int margin) {
 		this.windowWidth = windowWidth;
 		this.windowHeight = windowHeight;
 		this.margin = margin;
@@ -50,6 +59,7 @@ public class PowerUp {
 	
 	/**
 	 * Paints the power up to screen.
+	 * @param g Instance of graphics.
 	 */
 	public void paintComponent(final Graphics g) {
 		g.setColor(Color.PINK);
@@ -72,7 +82,7 @@ public class PowerUp {
 	 * @return Status of location, if power up is still on screen.
 	 */
 	public boolean update() {
-		int r = rand.nextInt(15) - rand.nextInt(15);
+		int r = rand.nextInt(10) - rand.nextInt(10);
 		this.xLocation += r;
 		if (this.xLocation < margin) {
 			this.xLocation += 20;

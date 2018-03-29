@@ -52,13 +52,20 @@ public class MainGUI extends JFrame {
 	 */
 	private String currPlayer;
 	/**
+	 * Players current blast type.
+	 */
+	private BlastTypes blastType;
+	
+	/**
 	 * Constructor initializes new game and adds components to frame.
 	 * Takes entered initials in constructor.
 	 * @param currPlayer current player initials.
+	 * @param blastType current player blast type.
 	 */	
-	public MainGUI(final String currPlayer) {
+	public MainGUI(final String currPlayer, final BlastTypes blastType) {
 		this.currPlayer = currPlayer;
-		game = new OrbitGame(windowWidth, windowHeight, margin);     
+		this.blastType = blastType;
+		game = new OrbitGame(windowWidth, windowHeight, margin, blastType);     
         scorePanel = new ScorePanel(windowHeight);
         this.setLayout(new BorderLayout());
         this.add(scorePanel, BorderLayout.EAST);
@@ -113,7 +120,7 @@ public class MainGUI extends JFrame {
 		Runnable r = new Runnable() {
 			@Override
 			public void run() {
-				game.reset();
+				game.reset(blastType);
 				scorePanel.resetMeteorsDodged();
 				scorePanel.resetAliensKilled();
 				int currTime = 0;

@@ -2,16 +2,17 @@ package game;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import javax.swing.JFrame;
 import javax.swing.JButton;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
 import javax.swing.JLabel;
@@ -25,6 +26,14 @@ import javax.swing.JLabel;
  * @author Ted Lang
  */
 public class StartMenu extends JFrame implements ActionListener {
+	/**
+	 * Width of menu.
+	 */
+	private int width = 600;
+	/**
+	 * Height of menu.
+	 */
+	private int height = 500;
 	/**
 	 * Start button.
 	 */
@@ -41,37 +50,14 @@ public class StartMenu extends JFrame implements ActionListener {
 	 * Upgrade button.
 	 */
 	private JButton upgrade;
-	
 	/**
-	 * Menu bar.
+	 * High Scores button.
 	 */
-	private JMenuBar menu;
-	/**
-	 * Menu.
-	 */
-	private JMenu file;
-	/**
-	 * Menu quit item.
-	 */
-	private JMenuItem quitItem;
-	/**
-	 * Menu info item.
-	 */
-	private JMenuItem infoItem;
-	/**
-	 * Menu stats item.
-	 */
-	private JMenuItem statsItem;
-	
+	private JButton scores;
 	/**
 	 * Panel for start menu.
 	 */
 	private JPanel panel;
-	
-	/**
-	 * Frame for pop up dialogs.
-	 */
-	private JFrame popUp;
 	
 	/**
 	 * Title Label.
@@ -82,49 +68,58 @@ public class StartMenu extends JFrame implements ActionListener {
 	 * Current player initials.
 	 */
 	private String currPlayer;
+	/**
+	 * Current players total score.
+	 */
+	private int currPlayerScore = 0;
+	/**
+	 * Current players total meteors dodged.
+	 */
+	private int currPlayerMeteors = 0;
+	/**
+	 * Current players total aliens killed.
+	 */
+	private int currPlayerAliens = 0;
+	/**
+	 * The current players blast type.
+	 */
+	static BlastTypes blastType = BlastTypes.STANDARD;
+	/**
+	 * Background star locations.
+	 */
+	private int[] starLocations;
 	
 	/**
 	 * Constructor for class sets up menus and displays frame.
 	 */
 	public StartMenu() {
-		setupFileMenu();
 		setupMainMenu();
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setTitle("Orbit");
-		this.setVisible(true);
-		this.setFocusable(true);
-		this.setLocationRelativeTo(null);
 		enterInitialsDialog();
-	}
-	
-	/**
-	 * This method creates the file menu.
-	 */
-	public void setupFileMenu() {
-		menu = new JMenuBar();
-		file = new JMenu("File");
-		quitItem = new JMenuItem("Quit");
-		infoItem = new JMenuItem("Information");
-		statsItem = new JMenuItem("Statistics");
-		
-		infoItem.addActionListener(this);
-		statsItem.addActionListener(this);
-		quitItem.addActionListener(this);
-		
-		file.add(infoItem);
-		file.add(statsItem);
-		file.add(quitItem);
-		
-		menu.add(file);
-		
-		setJMenuBar(menu);
+		readStats();
+		Utils.starLoop(panel, starLocations, width, height);
 	}
 
 	/**
 	 * This method sets up the start menu.
 	 */
 	public void setupMainMenu() {
-		panel = new JPanel();
+		starLocations = Utils.generateStars(2, width, height);
+		panel = new JPanel() {
+			private static final long serialVersionUID = 1L;
+			/**
+			 * Paints the background of panel.
+			 */
+			public void paint(final Graphics g) {
+				super.paint(g);
+				g.setColor(Color.DARK_GRAY);
+				for (int i = 0; i < starLocations.length; i += 4) {
+					g.fillOval(starLocations[i], 
+							starLocations[i + 1], 
+							starLocations[i + 2], 
+							starLocations[i + 3]);
+				}
+			}
+		};
 		
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints g = new GridBagConstraints();
@@ -137,39 +132,44 @@ public class StartMenu extends JFrame implements ActionListener {
 		orbit.setForeground(Color.RED);
 		
 		start = new JButton("Start");
-		//start.setPreferredSize(new Dimension(25,40));
 		stats = new JButton("Statistics");
 		upgrade = new JButton("Upgrades");
+		scores = new JButton("High Scores");
 		quit = new JButton("Quit");
 		
 		start.setBackground(Color.CYAN);
 		stats.setBackground(Color.CYAN);
 		upgrade.setBackground(Color.GREEN);
+		scores.setBackground(Color.GREEN);
 		quit.setBackground(Color.RED);
 		
 		start.setFont(new Font("Bold", Font.BOLD, 18));
 		stats.setFont(new Font("Bold", Font.BOLD, 18));
 		upgrade.setFont(new Font("Bold", Font.BOLD, 18));
+		scores.setFont(new Font("Bold", Font.BOLD, 18));
 		quit.setFont(new Font("Bold", Font.BOLD, 18));
 		
 		start.addActionListener(this);
 		stats.addActionListener(this);
 		upgrade.addActionListener(this);
+		scores.addActionListener(this);
 		quit.addActionListener(this);
 		
 		panel.add(orbit);
 		panel.add(start, g);
 		panel.add(stats, g);
 		panel.add(upgrade, g);
+		panel.add(scores, g);
 		panel.add(quit, g);
-		
-		
 		panel.setBackground(Color.BLACK);
-		
 		this.setResizable(false);
-		this.setSize(600, 500);
-		
+		this.setSize(width, height);
 		this.add(panel);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setTitle("Orbit");
+		this.setVisible(true);
+		this.setFocusable(true);
+		this.setLocationRelativeTo(null);
 	}
 	
 	/**
@@ -179,40 +179,21 @@ public class StartMenu extends JFrame implements ActionListener {
 	public void actionPerformed(final ActionEvent e) {
 		if (e.getSource() == start) {
 			this.dispose();
-			MainGUI gui = new MainGUI(currPlayer);
+			MainGUI gui = new MainGUI(currPlayer, blastType);
 			gui.beginGame();
-		}
-		
-		if (e.getSource() == infoItem) {
-			popUp = new JFrame("Information");
-			JOptionPane.showMessageDialog(popUp, 
-			"The name of the game is Orbit!"
-			+ "\n The object of the game is to see"
-			+ "\n how far you can "
-			+ "go without crashing"
-			+ "\n your ship into any meteors!"
-			+ "\n Oh and watch out "
-			+ "for aliens too...");
-		}
-		
-		if (e.getSource() == stats || e.getSource() == statsItem) {
-			popUp = new JFrame("Statistics");
-			JOptionPane.showMessageDialog(popUp, 
-					"Here is where we put "
-					+ "the latest stats!");
-		}
-		
+		}		
+		if (e.getSource() == stats) {
+			new StatsMenu(currPlayer, currPlayerScore,
+					currPlayerMeteors, currPlayerAliens);
+		}		
 		if (e.getSource() == upgrade) {
-			popUp = new JFrame("Upgrades");
-			JOptionPane.showMessageDialog(popUp, 
-					"Here is where you will be able"
-					+ "\n to upgrade your ship!"
-					+ "\n This will be coming "
-					+ "in the second release.");
+			new UpgradesMenu(currPlayer, currPlayerAliens);
 		}
-		
-		if (e.getSource() == quit || e.getSource() == quitItem) {
-			System.exit(1);
+		if (e.getSource() == scores) {
+			new HighScoresMenu();
+		}
+		if (e.getSource() == quit) {
+			System.exit(0);
 		}
 	}
 	
@@ -230,6 +211,37 @@ public class StartMenu extends JFrame implements ActionListener {
 			currPlayer = JOptionPane.showInputDialog("Enter your initials");
 			if (currPlayer == null) {
 				System.exit(0);
+			}
+		}
+	}
+	
+	/**
+	 * Reads the current players stats from the Stats.txt save file.
+	 */
+	public void readStats() {
+		File file = new File("Stats.txt");
+		if (file.exists()) {
+			String line = null;
+			BufferedReader br;
+			try {
+				br = new BufferedReader(new FileReader("Stats.txt"));
+				while ((line = br.readLine()) != null) {
+					// Splits line into fields 
+					String[] splitLine = line.split(" ");
+					// Checks if this line (save) is the same as current player
+					// if so save that lines stats
+					if (currPlayer.equals(splitLine[0])) {
+						currPlayerScore = Integer.parseInt(splitLine[1]);
+						currPlayerMeteors = Integer.parseInt(splitLine[2]);
+						currPlayerAliens = Integer.parseInt(splitLine[3]);
+						break; // break when found
+					}
+				}
+				br.close();
+			} catch (FileNotFoundException e) {
+				JOptionPane.showMessageDialog(this, "Load file not found.");
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
