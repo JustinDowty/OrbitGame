@@ -44,15 +44,21 @@ public class UpgradesMenu extends JFrame implements ActionListener {
 	 * Locations of background stars.
 	 */
 	private int[] starLocations;
+	/**
+	 * Instance of current start menu.
+	 */
+	private StartMenu menu;
 	
 	/**
 	 * Builds upgrades menu.
 	 * @param player Curent player.
 	 * @param aliens Player's alien's killed.
 	 */
-	public UpgradesMenu(final String player, final int aliens) {
+	public UpgradesMenu(final String player, final int aliens,
+			StartMenu menu) {
 		this.player = player;
 		this.aliens = aliens;
+		this.menu = menu;
 		setUpMenu();
 	}
 	
@@ -140,7 +146,7 @@ public class UpgradesMenu extends JFrame implements ActionListener {
 	public void actionPerformed(final ActionEvent e) {
 		if (e.getSource() == sideBlast) {
 			if (aliens > 20) {
-				StartMenu.blastType = BlastTypes.SIDE_BLASTS;
+				menu.setBlastType(BlastTypes.SIDE_BLASTS);
 				this.dispose();
 			} else {
 				JOptionPane.showMessageDialog(this,
@@ -149,7 +155,7 @@ public class UpgradesMenu extends JFrame implements ActionListener {
 		}
 		if (e.getSource() == multiBlast) {
 			if (aliens > 50) {
-				StartMenu.blastType = BlastTypes.MULTI_BLAST;
+				menu.setBlastType(BlastTypes.MULTI_BLAST);
 				this.dispose();
 			} else {
 				JOptionPane.showMessageDialog(this,
@@ -158,7 +164,7 @@ public class UpgradesMenu extends JFrame implements ActionListener {
 		}
 		if (e.getSource() == lazer) {
 			if (aliens > 100) {
-				StartMenu.blastType = BlastTypes.LAZER;
+				menu.setBlastType(BlastTypes.LAZER);
 				this.dispose();
 			} else {
 				JOptionPane.showMessageDialog(this,

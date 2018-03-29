@@ -83,7 +83,7 @@ public class StartMenu extends JFrame implements ActionListener {
 	/**
 	 * The current players blast type.
 	 */
-	static BlastTypes blastType = BlastTypes.STANDARD;
+	private BlastTypes blastType = BlastTypes.STANDARD;
 	/**
 	 * Background star locations.
 	 */
@@ -187,7 +187,7 @@ public class StartMenu extends JFrame implements ActionListener {
 					currPlayerMeteors, currPlayerAliens);
 		}		
 		if (e.getSource() == upgrade) {
-			new UpgradesMenu(currPlayer, currPlayerAliens);
+			new UpgradesMenu(currPlayer, currPlayerAliens, this);
 		}
 		if (e.getSource() == scores) {
 			new HighScoresMenu();
@@ -244,6 +244,14 @@ public class StartMenu extends JFrame implements ActionListener {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	/**
+	 * Set players blast type.
+	 * @param blastType Blast type to be set.
+	 */
+	public void setBlastType(BlastTypes blastType) {
+		this.blastType = blastType;
 	}
 
 	/**

@@ -30,15 +30,15 @@ public class MainGUI extends JFrame {
 	/**
 	 * Window width of game panel.
 	 */
-	private final int windowWidth = 1100;
+	private static final int windowWidth = 1100;
 	/**
 	 * Window height of game panel.
 	 */
-	private final int windowHeight = 800;
+	private static final int windowHeight = 800;
 	/**
 	 * Margin from edge of frame to edge of game.
 	 */
-	private final int margin = 400; 
+	private static final int margin = 400; 
 	/**
 	 * Score Panel instance.
 	 */
