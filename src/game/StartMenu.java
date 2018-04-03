@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import javax.swing.JFrame;
 import javax.swing.JButton;
@@ -26,6 +25,7 @@ import javax.swing.JLabel;
  * @author Ted Lang
  */
 public class StartMenu extends JFrame implements ActionListener {
+	private static final long serialVersionUID = 1L;
 	/**
 	 * Width of menu.
 	 */
@@ -54,6 +54,10 @@ public class StartMenu extends JFrame implements ActionListener {
 	 * High Scores button.
 	 */
 	private JButton scores;
+	/**
+	 * Controls button.
+	 */
+	private JButton controls;
 	/**
 	 * Panel for start menu.
 	 */
@@ -135,24 +139,28 @@ public class StartMenu extends JFrame implements ActionListener {
 		stats = new JButton("Statistics");
 		upgrade = new JButton("Upgrades");
 		scores = new JButton("High Scores");
+		controls = new JButton("Controls");
 		quit = new JButton("Quit");
 		
 		start.setBackground(Color.CYAN);
 		stats.setBackground(Color.CYAN);
 		upgrade.setBackground(Color.GREEN);
 		scores.setBackground(Color.GREEN);
+		controls.setBackground(Color.RED);
 		quit.setBackground(Color.RED);
 		
 		start.setFont(new Font("Bold", Font.BOLD, 18));
 		stats.setFont(new Font("Bold", Font.BOLD, 18));
 		upgrade.setFont(new Font("Bold", Font.BOLD, 18));
 		scores.setFont(new Font("Bold", Font.BOLD, 18));
+		controls.setFont(new Font("Bold", Font.BOLD, 18));
 		quit.setFont(new Font("Bold", Font.BOLD, 18));
 		
 		start.addActionListener(this);
 		stats.addActionListener(this);
 		upgrade.addActionListener(this);
 		scores.addActionListener(this);
+		controls.addActionListener(this);
 		quit.addActionListener(this);
 		
 		panel.add(orbit);
@@ -160,6 +168,7 @@ public class StartMenu extends JFrame implements ActionListener {
 		panel.add(stats, g);
 		panel.add(upgrade, g);
 		panel.add(scores, g);
+		panel.add(controls, g);
 		panel.add(quit, g);
 		panel.setBackground(Color.BLACK);
 		this.setResizable(false);
@@ -191,6 +200,9 @@ public class StartMenu extends JFrame implements ActionListener {
 		}
 		if (e.getSource() == scores) {
 			new HighScoresMenu();
+		}
+		if (e.getSource() == controls) {
+			new ControlsMenu();
 		}
 		if (e.getSource() == quit) {
 			System.exit(0);
@@ -238,10 +250,8 @@ public class StartMenu extends JFrame implements ActionListener {
 					}
 				}
 				br.close();
-			} catch (FileNotFoundException e) {
-				JOptionPane.showMessageDialog(this, "Load file not found.");
 			} catch (Exception e) {
-				e.printStackTrace();
+				JOptionPane.showMessageDialog(this, "Error loading save file. Try again.");
 			}
 		}
 	}
@@ -250,7 +260,7 @@ public class StartMenu extends JFrame implements ActionListener {
 	 * Set players blast type.
 	 * @param blastType Blast type to be set.
 	 */
-	public void setBlastType(BlastTypes blastType) {
+	public void setBlastType(final BlastTypes blastType) {
 		this.blastType = blastType;
 	}
 

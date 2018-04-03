@@ -16,6 +16,7 @@ import javax.swing.border.LineBorder;
  * @author Justin Dowty
  */
 public class StatsMenu extends JFrame {
+	private static final long serialVersionUID = 1L;
 	/**
 	 * The current player.
 	 */

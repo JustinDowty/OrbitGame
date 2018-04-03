@@ -102,21 +102,11 @@ public class ScorePanel extends JPanel {
 		score.setBorder(emptyBorder);
 		this.add(score);
 		
-		fireButton = createFireButton();
-		this.add(fireButton);
-		
-	}
-	
-	/**
-	 * Creates fire button.
-	 * @return The fire button to be used in panel.
-	 */
-	public JLabel createFireButton() {
 		Font fireFont = new Font("Impact", Font.BOLD, 40);
 		fireButton = new JLabel("FIRE!");
 		fireButton.setFont(fireFont);
 		fireButton.setForeground(Color.LIGHT_GRAY);
-		return fireButton;
+		this.add(fireButton);		
 	}
 
 	/**

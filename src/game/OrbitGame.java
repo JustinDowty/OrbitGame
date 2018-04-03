@@ -213,7 +213,7 @@ public class OrbitGame extends JPanel {
 			fightingBoss = true;
 			// clears all meteors but 2
 			alienArray.subList(1, alienArray.size()).clear();
-			meteorArray.subList(2, meteorArray.size()).clear();
+			meteorArray.subList(4, meteorArray.size()).clear();
 			boss = new Boss(windowWidth, windowHeight, 
 					margin, bossCount);
 		}

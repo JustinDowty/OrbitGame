@@ -16,6 +16,7 @@ import javax.swing.JPanel;
  * @author Alec Allain
  */
 public class Meteor extends JPanel {
+	private static final long serialVersionUID = 1L;
 	/**
 	 * Window width of game panel.
 	 */

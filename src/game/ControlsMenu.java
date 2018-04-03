@@ -4,23 +4,18 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 /**
- * This class generates High Score Menu.
+ * This class generates Controls Menu.
  * @author JustinDowty
  *
  */
-public class HighScoresMenu extends JFrame {
+public class ControlsMenu extends JFrame {
 	private static final long serialVersionUID = 1L;
 	/**
 	 * Background star locations.
@@ -30,7 +25,7 @@ public class HighScoresMenu extends JFrame {
 	/**
 	 * Builds high scores menu.
 	 */
-	public HighScoresMenu() {
+	public ControlsMenu() {
 		JPanel panel = new JPanel() {
 			private static final long serialVersionUID = 1L;
 			/**
@@ -52,29 +47,15 @@ public class HighScoresMenu extends JFrame {
 		panel.setLayout(layout);
 		panel.setBackground(Color.BLACK);
 		panel.setBorder(new LineBorder(Color.BLACK, 20));
-		JLabel title = new JLabel("HIGH SCORES:");
-		title.setFont(font);
-		title.setForeground(Color.GREEN);
-		title.setBorder(
+		JLabel text = new JLabel("<html>CONTROLS:<br>"
+				+ "Use arrow keys to navigate.<br>"
+				+ "Space bar to fire weapon.<br>"
+				+ "P to pause current game.");
+		text.setFont(font);
+		text.setForeground(Color.RED);
+		text.setBorder(
 				BorderFactory.createEmptyBorder(20, 0, 20, 0));
-		panel.add(title);
-		try {
-			File file = new File("HighScores.txt");
-			String line;
-			if (file.exists()) {
-				BufferedReader br 
-					= new BufferedReader(new FileReader("HighScores.txt"));
-				while ((line = br.readLine()) != null) {
-					JLabel label = new JLabel(line);
-					label.setFont(font);
-					label.setForeground(Color.GREEN);
-					panel.add(label);
-				}
-				br.close();
-			}
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(this, "Error loading save file. Try again.");
-		}
+		panel.add(text);
 		this.add(panel);
 		this.pack();
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

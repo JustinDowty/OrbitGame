@@ -53,9 +53,10 @@ public class UpgradesMenu extends JFrame implements ActionListener {
 	 * Builds upgrades menu.
 	 * @param player Curent player.
 	 * @param aliens Player's alien's killed.
+	 * @param menu Instance of current Start Menu.
 	 */
 	public UpgradesMenu(final String player, final int aliens,
-			StartMenu menu) {
+			final StartMenu menu) {
 		this.player = player;
 		this.aliens = aliens;
 		this.menu = menu;

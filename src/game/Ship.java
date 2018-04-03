@@ -14,6 +14,7 @@ import javax.swing.JPanel;
  * @author Alec Allain
  */
 public class Ship extends JPanel {
+	private static final long serialVersionUID = 1L;
 	/**
 	 * Current X location.
 	 */

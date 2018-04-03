@@ -30,15 +30,15 @@ public class MainGUI extends JFrame {
 	/**
 	 * Window width of game panel.
 	 */
-	private static final int windowWidth = 1100;
+	private static final int WINDOW_WIDTH = 1100;
 	/**
 	 * Window height of game panel.
 	 */
-	private static final int windowHeight = 800;
+	private static final int WINDOW_HEIGHT = 800;
 	/**
 	 * Margin from edge of frame to edge of game.
 	 */
-	private static final int margin = 400; 
+	private static final int MARGIN = 400; 
 	/**
 	 * Score Panel instance.
 	 */
@@ -65,14 +65,14 @@ public class MainGUI extends JFrame {
 	public MainGUI(final String currPlayer, final BlastTypes blastType) {
 		this.currPlayer = currPlayer;
 		this.blastType = blastType;
-		game = new OrbitGame(windowWidth, windowHeight, margin, blastType);     
-        scorePanel = new ScorePanel(windowHeight);
+		game = new OrbitGame(WINDOW_WIDTH, WINDOW_HEIGHT, MARGIN, blastType);     
+        scorePanel = new ScorePanel(WINDOW_HEIGHT);
         this.setLayout(new BorderLayout());
         this.add(scorePanel, BorderLayout.EAST);
         this.add(game, BorderLayout.CENTER);
         this.setFocusable(true);
         this.setUpKeyListener();
-        this.setSize(windowWidth + 300, windowHeight);
+        this.setSize(WINDOW_WIDTH + 300, WINDOW_HEIGHT);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setTitle("ORBIT");
         this.setResizable(false);
