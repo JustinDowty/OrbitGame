@@ -130,7 +130,7 @@ public final class Utils {
 	        clip.open(audioInputStream);
 	        clip.loop(Clip.LOOP_CONTINUOUSLY);
 	        return clip;
-	    } catch(Exception ex) { 
+	    } catch (Exception ex) { 
 	        ex.printStackTrace();
 	    }
 	    return null;
