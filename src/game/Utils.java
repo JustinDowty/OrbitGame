@@ -121,15 +121,16 @@ public final class Utils {
 	/**
 	 * Plays game music.
 	 * @param file String file location.
+	 * @return instance of clip.
 	 */
-	public static Clip playSound(String file) {
+	public static Clip playSound(final String file) {
 	    try {
 	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(file).getAbsoluteFile());
 	        Clip clip = AudioSystem.getClip();
 	        clip.open(audioInputStream);
 	        clip.loop(Clip.LOOP_CONTINUOUSLY);
 	        return clip;
-	    } catch(Exception ex) {
+	    } catch(Exception ex) { 
 	        ex.printStackTrace();
 	    }
 	    return null;
