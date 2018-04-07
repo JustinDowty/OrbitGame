@@ -98,7 +98,7 @@ public class Boss extends JPanel {
 		this.windowHeight = windowHeight;
 		this.margin = margin;
 		this.health = 10 + 5 * bossCount;
-		this.size = new Dimension(400, 200);
+		this.size = new Dimension(400, 200); // 400 200
 		this.setLocation();
 	}
 	

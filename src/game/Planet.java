@@ -47,7 +47,7 @@ public class Planet {
 		this.yLocation = windowHeight - 400;
 		
 		int[] xCoords = {0, 10, 20, 100, 180, 360, 400, 50};
-		int[] yCoords = {900, 600, 600, 500, 600, 500, 650, 900};
+		int[] yCoords = {1200, 900, 900, 800, 900, 800, 950, 1200};
 		int points = 8;
 		land = new Polygon(xCoords, yCoords, points);	
 		this.waterColor = Utils.chooseRandomColor();

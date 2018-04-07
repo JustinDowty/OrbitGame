@@ -168,8 +168,10 @@ public class Ship extends JPanel {
 		} else if (this.blastType == BlastTypes.LAZER) {
 			g.setColor(Color.RED);
 		}
-		for (int i = 0; i < blastxLocations.length; i++) {
-			g.fillOval(blastxLocations[i], blastyLocations[i], blastWidth, blastHeight);
+		if (firing) {
+			for (int i = 0; i < blastxLocations.length; i++) {
+				g.fillOval(blastxLocations[i], blastyLocations[i] - 320, blastWidth, blastHeight);
+			}
 		}
 		i.paintIcon(this, g, xLocation, yLocation);
 		g.setColor(Color.RED);

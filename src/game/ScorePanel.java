@@ -63,6 +63,7 @@ public class ScorePanel extends JPanel {
 		Border emptyBorder 
 			= BorderFactory.createEmptyBorder(0, 0, 10, 0);
 		this.setBorder(border);
+
 		JLabel title = new JLabel("ORBIT");
 		Font titleFont = new Font("Impact", Font.BOLD, 80);
 		title.setFont(titleFont);
@@ -75,7 +76,7 @@ public class ScorePanel extends JPanel {
 		meteorsLabel.setBorder(emptyBorder);
 		this.add(meteorsLabel);
 		
-		meteors.setPreferredSize(new Dimension(190, 60));
+		meteors.setPreferredSize(new Dimension(190, 120));
 		Font scoreFont = new Font("Impact", Font.BOLD, 60);
 		meteors.setFont(scoreFont);
 		meteors.setBorder(emptyBorder);
@@ -87,7 +88,7 @@ public class ScorePanel extends JPanel {
 		aliensLabel.setBorder(emptyBorder);
 		this.add(aliensLabel);
 		
-		aliens.setPreferredSize(new Dimension(190, 60));
+		aliens.setPreferredSize(new Dimension(190, 120));
 		aliens.setFont(scoreFont);
 		aliens.setBorder(emptyBorder);
 		this.add(aliens);
@@ -97,12 +98,12 @@ public class ScorePanel extends JPanel {
 		scoreLabel.setBorder(emptyBorder);
 		this.add(scoreLabel);
 		
-		score.setPreferredSize(new Dimension(190, 60));
+		score.setPreferredSize(new Dimension(190, 120));
 		score.setFont(scoreFont);
 		score.setBorder(emptyBorder);
 		this.add(score);
 		
-		Font fireFont = new Font("Impact", Font.BOLD, 40);
+		Font fireFont = new Font("Impact", Font.BOLD, 60);
 		fireButton = new JLabel("FIRE!");
 		fireButton.setFont(fireFont);
 		fireButton.setForeground(Color.LIGHT_GRAY);
