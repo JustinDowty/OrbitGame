@@ -1,8 +1,12 @@
 package game;
 
 import java.awt.Color;
+import java.io.File;
 import java.util.Random;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.JPanel;
 
 /**
@@ -112,5 +116,22 @@ public final class Utils {
 		};
 		Thread t = new Thread(r);
 		t.start();
+	}
+	
+	/**
+	 * Plays game music.
+	 * @param file String file location.
+	 */
+	public static Clip playSound(String file) {
+	    try {
+	        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(file).getAbsoluteFile());
+	        Clip clip = AudioSystem.getClip();
+	        clip.open(audioInputStream);
+	        clip.loop(Clip.LOOP_CONTINUOUSLY);
+	        return clip;
+	    } catch(Exception ex) {
+	        ex.printStackTrace();
+	    }
+	    return null;
 	}
 }

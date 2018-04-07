@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import javax.sound.sampled.Clip;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
@@ -55,6 +57,10 @@ public class MainGUI extends JFrame {
 	 * Players current blast type.
 	 */
 	private BlastTypes blastType;
+	/**
+	 * Games audio clip.
+	 */
+	private Clip clip;
 	
 	/**
 	 * Constructor initializes new game and adds components to frame.
@@ -77,7 +83,8 @@ public class MainGUI extends JFrame {
         this.setTitle("ORBIT");
         this.setResizable(false);
         this.setLocationRelativeTo(null);
-        this.setVisible(true);        
+        this.setVisible(true);    
+        clip = Utils.playSound("MainWAV.wav");
 	}
 	
 	/**
@@ -143,6 +150,7 @@ public class MainGUI extends JFrame {
 						}
 		        	}
 		        }
+		        clip.stop();
 		        addToScores();
 		        addToStats();
 		        lostDialog();

@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import javax.swing.JFrame;
+import javax.sound.sampled.Clip;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
@@ -92,6 +93,10 @@ public class StartMenu extends JFrame implements ActionListener {
 	 * Background star locations.
 	 */
 	private int[] starLocations;
+	/**
+	 * Game music.
+	 */
+	private Clip clip;
 	
 	/**
 	 * Constructor for class sets up menus and displays frame.
@@ -101,6 +106,7 @@ public class StartMenu extends JFrame implements ActionListener {
 		enterInitialsDialog();
 		readStats();
 		Utils.starLoop(panel, starLocations, width, height);
+		clip = Utils.playSound("StartWAV.wav");
 	}
 
 	/**
@@ -188,6 +194,7 @@ public class StartMenu extends JFrame implements ActionListener {
 	public void actionPerformed(final ActionEvent e) {
 		if (e.getSource() == start) {
 			this.dispose();
+			clip.stop();
 			MainGUI gui = new MainGUI(currPlayer, blastType);
 			gui.beginGame();
 		}		
