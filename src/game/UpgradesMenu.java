@@ -146,7 +146,7 @@ public class UpgradesMenu extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(final ActionEvent e) {
 		if (e.getSource() == sideBlast) {
-			if (aliens > 20) {
+			if (aliens >= 20) {
 				menu.setBlastType(BlastTypes.SIDE_BLASTS);
 				this.dispose();
 			} else {
@@ -155,7 +155,7 @@ public class UpgradesMenu extends JFrame implements ActionListener {
 			}
 		}
 		if (e.getSource() == multiBlast) {
-			if (aliens > 50) {
+			if (aliens >= 50) {
 				menu.setBlastType(BlastTypes.MULTI_BLAST);
 				this.dispose();
 			} else {
@@ -164,7 +164,7 @@ public class UpgradesMenu extends JFrame implements ActionListener {
 			}
 		}
 		if (e.getSource() == lazer) {
-			if (aliens > 100) {
+			if (aliens >= 100) {
 				menu.setBlastType(BlastTypes.LAZER);
 				this.dispose();
 			} else {

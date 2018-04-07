@@ -170,7 +170,11 @@ public class Ship extends JPanel {
 		}
 		if (firing) {
 			for (int i = 0; i < blastxLocations.length; i++) {
-				g.fillOval(blastxLocations[i], blastyLocations[i] - 320, blastWidth, blastHeight);
+				if (blastType == BlastTypes.LAZER) {
+					g.fillOval(blastxLocations[i], blastyLocations[i] - 320, blastWidth, blastHeight);
+				} else {
+					g.fillOval(blastxLocations[i], blastyLocations[i], blastWidth, blastHeight);
+				}				
 			}
 		}
 		i.paintIcon(this, g, xLocation, yLocation);
