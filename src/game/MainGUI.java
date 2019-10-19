@@ -60,7 +60,7 @@ public class MainGUI extends JFrame {
 	/**
 	 * Games audio clip.
 	 */
-	private Clip clip;
+	//private Clip clip;
 	
 	/**
 	 * Constructor initializes new game and adds components to frame.
@@ -84,7 +84,7 @@ public class MainGUI extends JFrame {
         this.setResizable(false);
         this.setLocationRelativeTo(null);
         this.setVisible(true);    
-        clip = Utils.playSound("MainWAV.wav");
+        //clip = Utils.playSound("MainWAV.wav");
 	}
 	
 	/**
@@ -95,25 +95,21 @@ public class MainGUI extends JFrame {
 		this.addKeyListener(new KeyListener() {
         	@Override
         	public void keyPressed(final KeyEvent e) {
-        		if (e.getKeyCode() == 39) { // Right arrow
-        			game.setCurrentKey('R');
-        		} else if (e.getKeyCode() == 37) { // Left arrow
-        			game.setCurrentKey('L');
-        		} else if (e.getKeyCode() == 38) { // Up arrow
-        			game.setCurrentKey('U');
-        	    } else if (e.getKeyCode() == 40) { // Down arrow
-        	        game.setCurrentKey('D');
-        	    } else if (e.getKeyCode() == 32) { // Space bar
+        		if (e.getKeyCode() == 32) { // Space bar
         	    	game.getShip().initiateBlast();
         	    } else if (e.getKeyCode() == 80) { // P for paused
         	    	paused = !paused;
+        	    } else if (e.getKeyCode() <= 40 && e.getKeyCode() >= 37) {
+        	    	game.setKeydown(e.getKeyCode());
         	    }
         	}
         	@Override
         	public void keyTyped(final KeyEvent e) {        	}
         	@Override
         	public void keyReleased(final KeyEvent e) {
-        		game.setCurrentKey('S');
+        		if (e.getKeyCode() <= 40 && e.getKeyCode() >= 37) {
+        	    	game.setKeyup(e.getKeyCode());
+        	    }
         	}
         });
 	}
@@ -150,7 +146,7 @@ public class MainGUI extends JFrame {
 						}
 		        	}
 		        }
-		        clip.stop();
+		        //clip.stop();
 		        addToScores();
 		        addToStats();
 		        lostDialog();

@@ -45,9 +45,9 @@ public class OrbitGame extends JPanel {
 	 */
 	private Planet planet;
 	/**
-	 * Current key that is pressed.
+	 * Current key that is pressed. Initialized to false.
 	 */
-	private char currentKey;
+	private boolean keysPressed[] = {false, false, false, false};
 	/**
 	 * Boolean whether game is in play or not.
 	 */
@@ -130,7 +130,10 @@ public class OrbitGame extends JPanel {
 		boss = null;
 		bossCount = 0;
 		bossLastDefeated = 0;
-		currentKey = 'S';
+		keysPressed[0] = false;
+		keysPressed[1] = false;
+		keysPressed[2] = false;
+		keysPressed[3] = false;
 	}
 	
 	/**
@@ -272,16 +275,16 @@ public class OrbitGame extends JPanel {
 		if (currTime - powerTime > 4000 && ship.isInvincible()) {
 			ship.setInvincible(false);
 		}
-		if (currentKey == 'L') {
+		if (keysPressed[0]) {
 			ship.moveLeft();
 		}
-		if (currentKey == 'R') {
-			ship.moveRight();
-		}
-		if (currentKey == 'U') {
+		if (keysPressed[1]) {
 			ship.moveUp();
 		}
-		if (currentKey == 'D') {
+		if (keysPressed[2]) {
+			ship.moveRight();
+		}
+		if (keysPressed[3]) {
 			ship.moveDown();
 		}
 		ship.updateBlast();
@@ -533,11 +536,21 @@ public class OrbitGame extends JPanel {
 	}
 	
 	/**
-	 * Sets current key pressed.
+	 * Sets key pressed.
 	 * @param key Character of key that is pressed.
 	 */
-	public void setCurrentKey(final char key) {
-		this.currentKey = key;
+	public void setKeydown(final int key) {
+		int keyPressedIndex = key - 37;
+		this.keysPressed[keyPressedIndex] = true;
+	}
+	
+	/**
+	 * Sets key released.
+	 * @param key Character of key that is pressed.
+	 */
+	public void setKeyup(final int key) {
+		int keyPressedIndex = key - 37;
+		this.keysPressed[keyPressedIndex] = false;
 	}
 	
 	/**
